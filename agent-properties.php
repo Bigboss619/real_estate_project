@@ -4,9 +4,6 @@ if (!isset($_SESSION['agents'])) {
 header('location: ' . BASE_URL . 'agent-login');
 }
 ?>
-<?php
-
-?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
 <div class="bg"></div>
 <div class="container">
@@ -55,24 +52,23 @@ GROUP BY property.id
 ORDER BY property.id DESC");
 $statement->execute([$_SESSION['agents']['id']]);
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-// var_dump($result);
 
 foreach ($result as $row) {
-    // var_dump($row);
     $i++;
     ?>
         <tr>
             <td><?php echo $i; ?></td>
             <td>
-                <?php echo $row['name']; ?>
+                <?php echo htmlspecialchars($row['name']); ?>
             </td>
             <td>
-                <?php echo $row['location_name']; ?>
+                 <?php echo htmlspecialchars($row['location_name']); ?>
             </td>
             <td>
-                <?php echo $row['types_name']; ?>
+                <?php echo htmlspecialchars($row['types_name']); ?>
             </td>
-            <td><?php echo $row['purpose']; ?></td>
+            <td>
+                <?php echo htmlspecialchars($row['purpose']); ?>
             <td>
                 <?php if($row['status'] == 'Active'): ?>
                 <span class="badge bg-success">Yes</span>
@@ -101,27 +97,27 @@ foreach ($result as $row) {
                             <div class="modal-body">
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Feature Photo: </label></div>
-                                    <div class="col-md-8"><img src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row ['feature_photo']; ?>" alt="" class="w-200"></div>
+                                    <div class="col-md-8"><img src="<?php echo BASE_URL; ?>uploads/property/<?php echo htmlspecialchars($row['feature_photo']); ?>" alt="" class="w-200"></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Property Name: </label></div>
-                                    <div class="col-md-8"><?php echo $row['name']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['name']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Location: </label></div>
-                                    <div class="col-md-8"><?php echo $row['location_name']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['location_name']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Property Type: </label></div>
-                                    <div class="col-md-8"><?php echo $row['types_name']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['types_name']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Purpose: </label></div>
-                                    <div class="col-md-8"><?php echo $row['purpose']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['purpose']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Slug: </label></div>
-                                    <div class="col-md-8"><?php echo $row['slug']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['slug']); ?></div>
                                 </div>
                                 <!-- <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Description: </label></div>
@@ -129,7 +125,7 @@ foreach ($result as $row) {
                                 </div> -->
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Price: </label></div>
-                                    <div class="col-md-8"><?php echo $row['price']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['price']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Amenities: </label></div>
@@ -137,7 +133,7 @@ foreach ($result as $row) {
                                         <?php
                                             $amenities = explode(',', $row['amenity_names']);
                                                 foreach ($amenities as $amenity) {
-                                            echo '-' . $amenity . '<br>';
+                                            echo '-' . htmlspecialchars($amenity) . '<br>';
                                             }
                                             // $amenities = $row['amenities'];
                                             // $amenities = explode(',', $row['amenities']);
@@ -155,39 +151,39 @@ foreach ($result as $row) {
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Bedroom: </label></div>
-                                    <div class="col-md-8"><?php echo $row['bedroom']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['bedroom']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Bathroom: </label></div>
-                                    <div class="col-md-8"><?php echo $row['bathroom']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['bathroom']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Size: </label></div>
-                                    <div class="col-md-8"><?php echo $row['size']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['size']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Floor: </label></div>
-                                    <div class="col-md-8"><?php echo $row['floor']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['floor']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Garage: </label></div>
-                                    <div class="col-md-8"><?php echo $row['garage']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['garage']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Balcony: </label></div>
-                                    <div class="col-md-8"><?php echo $row['balcony']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['balcony']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Address: </label></div>
-                                    <div class="col-md-8"><?php echo $row['Address']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['Address']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Built Year: </label></div>
-                                    <div class="col-md-8"><?php echo $row['built_year']; ?></div>
+                                    <div class="col-md-8"><?php echo htmlspecialchars($row['built_year']); ?></div>
                                 </div>
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Map: </label></div>
-                                    <div class="col-md-8 map1"><?php echo $row['map']; ?></div>
+                                    <div class="col-md-8 map1"><?php echo htmlspecialchars($row['map']); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -195,12 +191,7 @@ foreach ($result as $row) {
                 </div>
             </td>
     </tr>
-<?php
-
-}
-
-?>
-
+<?php } ?>
 </tbody>
 </table>
 </div>

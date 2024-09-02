@@ -36,3 +36,4 @@ N/B
 While using the palpay
 Use the Business account details (Client ID & Secret Key) in your config.php
 Then you use personal account details to log in to your accoint (Email and password)
+
