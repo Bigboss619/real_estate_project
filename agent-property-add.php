@@ -119,8 +119,9 @@ if (!isset($_SESSION['agents'])) {
                         Address, 
                         built_year, 
                         map,
+                        is_featured,
                         status
-                        ) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        ) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                         $statement->execute([
                             $_SESSION['agents']['id'], 
                             $_POST['location_id'],
@@ -141,6 +142,7 @@ if (!isset($_SESSION['agents'])) {
                             $_POST['address'],
                             $_POST['built_year'],
                             $_POST['map'],
+                            $_POST['is_featured'],
                             'Active'
                         ]);
                         $success_message = 'Property is added successfully';
@@ -271,6 +273,14 @@ if (!isset($_SESSION['agents'])) {
                         <div class="col-md-12 mb-3">
                             <label for="" class="form-label">Location Map</label>
                             <textarea name="map" class="form-control h-150" cols="30" rows="10"><?php if(isset($_POST['map'])) {echo $_POST['map'];} ?></textarea>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="form-label">Is Featured? *</label>
+                            <select name="is_featured" class="form-control select2">
+                                
+                                <option value="Yes" <?php if(isset($_POST['is_featured'])){ if($_POST['is_featured'] == 'Yes') {echo 'selected'; }} ?>>Yes</option>
+                                <option value="No" <?php if(isset($_POST['is_featured'])) { if($_POST['is_featured'] == 'No') {echo 'selected'; }} ?>>No</option>
+                            </select>
                         </div>
                         <div class="col-md-12 mb-3">
                             <label for="" class="form-label">Amenities</label>

@@ -18,6 +18,19 @@
     $statement = $conn->prepare("DELETE FROM property WHERE id=?");
     $statement->execute([$id]);
 
+    $statement = $conn->prepare("SELECT * FROM property_photo WHERE property_id=?");
+   $statement->execute([$id]);
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($variable as $row) {
+        unlink('uploads/property/property_photo/'.$row['photo']);   
+    }
+
+    $statement = $conn->prepare("DELETE FROM property_photo WHERE property_id=?");
+    $statement->execute([$id]);
+
+    $statement = $conn->prepare("DELETE FROM property_video WHERE property_id=?");
+    $statement->execute([$id]);
+
     $success_message = 'Package is deleted successfully';
     $_SESSION['success_message'] = $success_message;
 

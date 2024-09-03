@@ -14,6 +14,12 @@ if(isset($_POST['form_update']))
             if(!filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Email is invalid");
             }
+            $statement = $pdo->prepare("SELECT * FROM agents WHERE email=? AND id!=?");
+            $statement->execute([$_POST['email'], $_SESSION['agents']['id']]);
+            $total = $statement->rowCount();
+            if($total > 0) {
+                throw new Exception("Email already exists");
+            }
              // Updating the database
              $statement = $conn->prepare("UPDATE agents SET fullname=?, email=?, company=?, designation=?, biography=?, phone=?, country=?, address=?, estate=?, city=?, zip_code=?, website=?, facebook=?, twitter=?, linkedln=?, pinterest=?, instagram=?, youtube=? WHERE id=?");
              $statement->execute([$_POST['name'],$_POST['email'],$_POST['company'],$_POST['designation'],$_POST['biography'],$_POST['phone'],$_POST['country'],$_POST['address'],$_POST['estate'],$_POST['city'],$_POST['zip_code'],$_POST['website'],$_POST['facebook'],$_POST['twitter'],$_POST['linkedln'],$_POST['pinterest'],$_POST['instagram'],$_POST['youtube'],$_SESSION['agents']['id']]);

@@ -18,6 +18,12 @@
             if(!filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Email is invalid");
             }
+            $statement = $pdo->prepare("SELECT * FROM customer WHERE email=?");
+            $statement->execute([$_POST['email']]);
+            $total = $statement->rowCount();
+            if($total > 0) {
+                throw new Exception("Email already exists");
+            }
             if($_POST['password'] == '' || $_POST['retype_password'] == '') {
                 throw new Exception("Password can not be empty");
             }

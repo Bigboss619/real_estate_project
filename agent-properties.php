@@ -59,7 +59,10 @@ foreach ($result as $row) {
         <tr>
             <td><?php echo $i; ?></td>
             <td>
-                <?php echo htmlspecialchars($row['name']); ?>
+                <?php echo htmlspecialchars($row['name']); ?><br>
+                <?php if($row['is_featured'] == 'Yes'): ?>
+                <span class="badge bg-success">Featured</span>
+                    <?php endif; ?>
             </td>
             <td>
                  <?php echo htmlspecialchars($row['location_name']); ?>
@@ -71,9 +74,9 @@ foreach ($result as $row) {
                 <?php echo htmlspecialchars($row['purpose']); ?>
             <td>
                 <?php if($row['status'] == 'Active'): ?>
-                <span class="badge bg-success">Yes</span>
+                <span class="badge bg-success"><?php echo htmlspecialchars($row['status']); ?></span>
                 <?php else:  ?>
-                    <span class="badge bg-danger">No</span>
+                    <span class="badge bg-danger"><?php echo htmlspecialchars($row['status']); ?></span>
                     <?php endif; ?>
             </td>
             <td class="w-150">

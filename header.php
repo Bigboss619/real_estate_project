@@ -1,13 +1,23 @@
 <?php
 ob_start();
 session_start();
+$cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
+
+if($cur_page == 'agent-payment-section.php' || $cur_page == 'agent-paypal-success.php')
+{
+    require_once('config/config_paypal.php');
+}
+if($cur_page == 'agent-payment-section.php' || $cur_page == 'agent-stripe-success.php')
+{
+    require_once('config/config_stripe.php');
+}
  include_once('config/config.php'); 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';
 // $cur_page = basename($_SERVER['REQUEST_URI']);
-$cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
