@@ -32,10 +32,24 @@
                     {
                         throw new Exception("Name cannot be empty" );
                     }
+                    $statement = $conn->prepare("SELECT * FROM locations WHERE name=? AND id!=?");
+                    $statement->execute([$_POST['name'],$_GET['id']]);
+                    $total = $statement->rowCount();
+                    if($total > 0)
+                    {
+                        throw new Exception("Name Already Exist");            
+                    }
                     if($_POST['slag'] == "")
                     {
                         throw new Exception("Slug cannot be empty");
                         
+                    }
+                    $statement = $conn->prepare("SELECT * FROM locations WHERE slag=? AND id!=?");
+                    $statement->execute([$_POST['slag'],$_GET['id']]);
+                    $total = $statement->rowCount();
+                    if($total > 0)
+                    {
+                        throw new Exception("Slug Already Exist");            
                     }
                     if(!preg_match('/^[a-z0-9-]+$/', $_POST['slag']))
                     {

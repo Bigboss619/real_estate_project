@@ -1,16 +1,32 @@
 <?php require_once('top.php'); ?>
 
 <?php
-    $id = $_GET['id'];
+   try {
+            $id = $_GET['id'];
 
-    $statement = $conn->prepare("DELETE FROM amenities WHERE id=?");
-    $statement->execute([$id]);
+            // Checking if there is an active property under location already. 
+            $statement = $conn->prepare("SELECT * FROM property WHERE FIND_IN_SET(?, amenities)>0");
+            $statement->execute([$_GET['id']]);
+            $total = $statement->rowCount();
+            if($total > 0)
+            {
+                throw new Exception("Amenity is used in properties. So, it can not be deleted.");
+            }
 
-    $success_message = 'Amenity is deleted successfully';
+            $statement = $conn->prepare("DELETE FROM amenities WHERE id=?");
+            $statement->execute([$id]);
 
-    $_SESSION['success_message'] = $success_message;
+            $success_message = 'Amenity is deleted successfully';
 
-    header('location: ' . ADMIN_URL . 'amenity-view.php');
-    exit
+            $_SESSION['success_message'] = $success_message;
+
+            header('location: ' . ADMIN_URL . 'amenity-view.php');
+            exit;
+   } catch (Exception $e) {
+        $error_message = $e->getMessage();
+        $_SESSION['error_message'] = $error_message;
+        header('location: ' . ADMIN_URL . 'amenity-view.php');
+        exit;
+   };
 ?>
 

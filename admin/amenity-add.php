@@ -8,8 +8,15 @@
                 {
                     throw new Exception("Name cannot be empty" );
                 }
-               
-               
+
+                $statement = $conn->prepare("SELECT * FROM amenities WHERE name=?");
+                $statement->execute([$_POST['name']]);
+                $total = $statement->rowCount();
+                if($total > 0)
+                {
+                    throw new Exception("Name Already Exist");
+                    
+                }
 
                 $statement = $conn->prepare("INSERT INTO amenities (name) VALUES(?)");
                 $statement->execute([$_POST['name']]);

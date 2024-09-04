@@ -12,6 +12,14 @@
                     {
                         throw new Exception("Name cannot be empty" );
                     }
+
+                    $statement = $conn->prepare("SELECT * FROM amenities WHERE name=? AND id!=?");
+                    $statement->execute([$_POST['name'],$_GET['id']]);
+                    $total = $statement->rowCount();
+                    if($total > 0)
+                    {
+                        throw new Exception("Name Already Exist");            
+                    }
                              
                     $statement = $conn->prepare("UPDATE amenities SET name=? WHERE id=?");
                     $statement->execute([

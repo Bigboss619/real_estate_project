@@ -8,9 +8,25 @@
                 {
                     throw new Exception("Name cannot be empty" );
                 }
+                $statement = $conn->prepare("SELECT * FROM locations WHERE name=?");
+                $statement->execute([$_POST['name']]);
+                $total = $statement->rowCount();
+                if($total > 0)
+                {
+                    throw new Exception("Name Already Exist");
+                    
+                }
                 if($_POST['slag'] == "")
                 {
                     throw new Exception("Slug cannot be empty");
+                    
+                }
+                $statement = $conn->prepare("SELECT * FROM locations WHERE slag=?");
+                $statement->execute([$_POST['slag']]);
+                $total = $statement->rowCount();
+                if($total > 0)
+                {
+                    throw new Exception("Slug Already Exist");
                     
                 }
                 if(!preg_match('/^[a-z0-9-]+$/', $_POST['slag']))

@@ -19,10 +19,10 @@
     $statement->execute([$id]);
 
     $statement = $conn->prepare("SELECT * FROM property_photo WHERE property_id=?");
-   $statement->execute([$id]);
+     $statement->execute([$id]);
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     foreach ($variable as $row) {
-        unlink('uploads/property/property_photo/'.$row['photo']);   
+        unlink('uploads/property/'.$row['photo']);   
     }
 
     $statement = $conn->prepare("DELETE FROM property_photo WHERE property_id=?");

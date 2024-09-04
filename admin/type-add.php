@@ -8,9 +8,15 @@
                 {
                     throw new Exception("Name cannot be empty" );
                 }
-               
-               
 
+                $statement = $conn->prepare("SELECT * FROM types WHERE name=?");
+                $statement->execute([$_POST['name']]);
+                $total = $statement->rowCount();
+                if($total > 0)
+                {
+                    throw new Exception("Name Already Exist");
+                    
+                }
                 $statement = $conn->prepare("INSERT INTO types (name) VALUES(?)");
                 $statement->execute([$_POST['name']]);
 

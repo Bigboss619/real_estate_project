@@ -12,7 +12,13 @@
                     {
                         throw new Exception("Name cannot be empty" );
                     }
-                             
+                    $statement = $conn->prepare("SELECT * FROM types WHERE name=? AND id!=?");
+                    $statement->execute([$_POST['name'],$_GET['id']]);
+                    $total = $statement->rowCount();
+                    if($total > 0)
+                    {
+                        throw new Exception("Name Already Exist");            
+                    }   
                     $statement = $conn->prepare("UPDATE types SET name=? WHERE id=?");
                     $statement->execute([
                         $_POST['name'],  
