@@ -15,10 +15,10 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <?php if($_SESSION['admin']['photo'] == ''): ?>
-                            <img alt="image" src="<?php echo BASE_URL; ?>uploads/default.png" class="rounded-circle-custom">
+                            <img alt="image" src="<?php echo BASE_URL; ?>uploads/admin-dp/default.png" class="rounded-circle-custom">
 
                         <?php else: ?>
-                        <img alt="image" src="<?php echo BASE_URL; ?>uploads/<?php echo $_SESSION ['admin']['photo'] ?>" class="rounded-circle-custom">
+                        <img alt="image" src="<?php echo BASE_URL; ?>uploads/admin-dp/<?php echo $_SESSION ['admin']['photo'] ?>" class="rounded-circle-custom">
 
                         <?php endif; ?>
                     </a>

@@ -14,7 +14,7 @@ if(isset($_POST['form_update']))
             if(!filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Email is invalid");
             }
-            $statement = $pdo->prepare("SELECT * FROM agents WHERE email=? AND id!=?");
+            $statement = $conn->prepare("SELECT * FROM agents WHERE email=? AND id!=?");
             $statement->execute([$_POST['email'], $_SESSION['agents']['id']]);
             $total = $statement->rowCount();
             if($total > 0) {
@@ -57,12 +57,12 @@ if(isset($_POST['form_update']))
                  {
 
                     // Checking if ther was a various photo and unlink it
-                    if($_SESSION['agents']['photo'] != '' && file_exists('uploads/'.$_SESSION['agents']['photo']))
+                    if($_SESSION['agents']['photo'] != '' && file_exists('uploads/agent-dp/'.$_SESSION['agents']['photo']))
                     {
                         unlink('uploads/'.$_SESSION['agents']['photo']);
                     }
         
-                    move_uploaded_file($path_tmp, 'uploads/'.$filename);
+                    move_uploaded_file($path_tmp, 'uploads/agent-dp/'.$filename);
     
                      // Updating the database
                      $statement = $conn->prepare("UPDATE agents SET photo=? WHERE id=?");
@@ -121,15 +121,15 @@ if(isset($_POST['form_update']))
        <?php require_once('agent-sidebar.php'); ?>
     </div>
     <div class="col-lg-9 col-md-12">
-        <form action="agent-edit-profile.php" method="post" enctype="multipart/form-data">
+        <form action="" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-12 mb-3">
                     <label for="">Existing Photo</label>
                     <div class="form-group">
                         <?php if($_SESSION['agents']['photo'] == ''): ?>
-                            <img src="<?php echo BASE_URL; ?>uploads/default.png" alt="" class="user-photo">
+                            <img src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="" class="user-photo">
                             <?php else: ?>
-                                <img src="<?php echo BASE_URL; ?>uploads/<?php echo htmlspecialchars($_SESSION['agents']['photo']); ?>" alt="" class="user-photo">
+                                <img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo htmlspecialchars($_SESSION['agents']['photo']); ?>" alt="" class="user-photo">
                             <?php endif; ?>
                     </div>
                 </div>

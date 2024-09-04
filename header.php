@@ -1,6 +1,7 @@
 <?php
 ob_start();
 session_start();
+include_once('config/config.php');
 $cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
 
 if($cur_page == 'agent-payment-section.php' || $cur_page == 'agent-paypal-success.php')
@@ -11,7 +12,7 @@ if($cur_page == 'agent-payment-section.php' || $cur_page == 'agent-stripe-succes
 {
     require_once('config/config_stripe.php');
 }
- include_once('config/config.php'); 
+  
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;

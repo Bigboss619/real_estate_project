@@ -50,7 +50,7 @@
                 {
                     throw new Exception("Please upload a valid photo");
                 }
-                move_uploaded_file($path_tmp, '../uploads/'.$filename);
+                move_uploaded_file($path_tmp, '../uploads/location/'.$filename);
                
 
                 $statement = $conn->prepare("INSERT INTO locations (name, photo, slag) VALUES(?, ?, ?)");

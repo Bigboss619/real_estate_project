@@ -122,10 +122,10 @@ foreach ($result as $row) {
                                     <div class="col-md-4"><label class="form-label">Slug: </label></div>
                                     <div class="col-md-8"><?php echo htmlspecialchars($row['slug']); ?></div>
                                 </div>
-                                <!-- <div class="form-group row bdb1 pt_10 mb_0">
+                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Description: </label></div>
-                                    <div class="col-md-8"></div>
-                                </div> -->
+                                    <div class="col-md-8"<?php echo htmlspecialchars($row['description']); ?>></div>
+                                </div> 
                                 <div class="form-group row bdb1 pt_10 mb_0">
                                     <div class="col-md-4"><label class="form-label">Price: </label></div>
                                     <div class="col-md-8"><?php echo htmlspecialchars($row['price']); ?></div>

@@ -35,7 +35,7 @@
             <tr>
                 <td><?php echo $i; ?></td>
                 <td>
-                    <img src="<?php echo BASE_URL; ?>uploads/<?php echo $row['photo']; ?>" alt="" class="w_200" srcset="">
+                    <img src="<?php echo BASE_URL; ?>uploads/location/<?php echo $row['photo']; ?>" alt="" class="w_200" srcset="">
                 </td>
                 <td><?php echo $row['name']; ?></td>
                 <td><?php echo $row['slag']; ?></td>

@@ -7,6 +7,12 @@ if (!isset($_SESSION['agents'])) {
 <?php
     if(isset($_POST['form_submit']))
     {
+        // Function to strip inline styles
+        function stripInlineStyles($html) {
+            // Remove style attributes from tags
+            return preg_replace('/\s*style="[^"]*"/i', '', $html);
+        }
+
         try {
                 if(empty($_POST['name']))
                 {
@@ -83,6 +89,8 @@ if (!isset($_SESSION['agents'])) {
                             }
                      }
                 } 
+                $descrption = strip_tags(stripInlineStyles($_POST['descrption']));
+                
                 $path = $_FILES['featured_photo']['name'];
                 $path_tmp = $_FILES['featured_photo']['tmp_name'];
 
@@ -129,7 +137,7 @@ if (!isset($_SESSION['agents'])) {
                             $amenities,
                             $_POST['name'],
                             $_POST['slug'],
-                            $_POST['description'],
+                            $descrption,
                             $filename,
                             $_POST['price'],
                             $_POST['purpose'],

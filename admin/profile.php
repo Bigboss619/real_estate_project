@@ -55,10 +55,10 @@ if(isset($_POST['update_form']))
                     // Checking if ther was a various photo and unlink it
                     if($_SESSION['admin']['photo'] != '')
                     {
-                        unlink('../uploads/'.$_SESSION['admin']['photo']);
+                        unlink('../uploads/admin-dp/'.$_SESSION['admin']['photo']);
                     }
         
-                    move_uploaded_file($path_tmp, '../uploads/'.$filename);
+                    move_uploaded_file($path_tmp, '../uploads/admin-dp/'.$filename);
     
                      // Updating the database
                      $statement = $conn->prepare("UPDATE admins SET photo=? WHERE id=?");
@@ -103,10 +103,10 @@ if(isset($_POST['update_form']))
                                             This code checks if an admin upload profile picture let is show but if He didn't use the default image 
                                              -->
                                             <?php if($_SESSION['admin']['photo'] == ''): ?>
-                                                <img src="<?php echo BASE_URL; ?>uploads/default.png" class="profile-photo w_100" alt="">
+                                                <img src="<?php echo BASE_URL; ?>uploads/admin-dp/default.png" class="profile-photo w_100" alt="">
 
                                                 <?php else: ?>
-                                                    <img src="<?php echo BASE_URL; ?>uploads/<?php echo $_SESSION['admin']['photo']; ?>"  class="profile-photo w_100" alt="">
+                                                    <img src="<?php echo BASE_URL; ?>uploads/admin-dp/<?php echo $_SESSION['admin']['photo']; ?>"  class="profile-photo w_100" alt="">
                                                     <?php endif; ?>
 
                                                 <input type="file" class="mt_10" name="photo">

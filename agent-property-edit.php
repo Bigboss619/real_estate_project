@@ -7,21 +7,14 @@ if (!isset($_SESSION['agents'])) {
 <?php
     if(isset($_POST['update']))
     {
-        
+        // Function to strip inline styles
+        function stripInlineStyles($html) {
+            // Remove style attributes from tags
+            return preg_replace('/\s*style="[^"]*"/i', '', $html);
+        }
         // $id = $_POST['id'];
         // Initialize variables with default values
-        $id = $_POST['id'] ?? '';
-        $name = $_POST['name'] ?? '';
-        $slug = $_POST['slug'] ?? '';
-        $price = $_POST['price'] ?? '';
-        $description = $_POST['description'] ?? '';
-        $bedroom = $_POST['bedroom'] ?? '';
-        $size = $_POST['size'] ?? '';
-        $floor = $_POST['floor'] ?? '';
-        $garage = $_POST['garage'] ?? '';
-        $balcony = $_POST['balcony'] ?? '';
-        $address = $_POST['address'] ?? '';
-        $is_featured = $_POST['is_featured'] ?? '';
+       
 
         try {
                 if(empty($_POST['name']))
@@ -99,6 +92,19 @@ if (!isset($_SESSION['agents'])) {
                 {
                     throw new Exception("Please select at least one amenity");
                 }
+                $id = $_POST['id'] ?? '';
+                $name = $_POST['name'] ?? '';
+                $slug = $_POST['slug'] ?? '';
+                $price = $_POST['price'] ?? '';
+                $descrption = strip_tags(stripInlineStyles($_POST['descrption'] ?? ''));
+                // $description = $_POST['description'] ?? '';
+                $bedroom = $_POST['bedroom'] ?? '';
+                $size = $_POST['size'] ?? '';
+                $floor = $_POST['floor'] ?? '';
+                $garage = $_POST['garage'] ?? '';
+                $balcony = $_POST['balcony'] ?? '';
+                $address = $_POST['address'] ?? '';
+                $is_featured = $_POST['is_featured'] ?? '';
                             // Check if the key exists before accessing it
                     // $name =  isset($_POST['name']) ? $_POST['name'] : '';       
                     // $slug = isset($_POST['slug']) ? $_POST['slug'] : '';
@@ -168,9 +174,9 @@ if (!isset($_SESSION['agents'])) {
                         $_POST['location_id'],
                         $_POST['type_id'],
                         $amenities,
-                        $_POST['name'],         
-                        $_POST['slug'],         
-                        $_POST['description'],  
+                        $name,         
+                        $slug,         
+                        $description,  
                         $filename,
                         $_POST['price'],        
                         $_POST['purpose'],      
