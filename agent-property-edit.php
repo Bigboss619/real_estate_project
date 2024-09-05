@@ -2,11 +2,24 @@
 <?php
 if (!isset($_SESSION['agents'])) {
     header('location: ' . BASE_URL . 'agent-login');
+    exit;
 }
+    // This make sure agent only edit his post and not another agent post
+      $id = $_GET['id'];
+      $statement = $conn->prepare("SELECT * FROM property WHERE id=? AND agent_id=?");
+      $statement->execute([$id,$_SESSION['agents']['id']]);
+      $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $total = $statement->rowCount();
+      if(!$total)
+      {
+        header('location: ' . BASE_URL. 'agent-login');
+        exit;
+      }
 ?>
 <?php
     if(isset($_POST['update']))
     {
+            echo 'Form submitted';
         // Function to strip inline styles
         function stripInlineStyles($html) {
             // Remove style attributes from tags
@@ -92,34 +105,8 @@ if (!isset($_SESSION['agents'])) {
                 {
                     throw new Exception("Please select at least one amenity");
                 }
-                $id = $_POST['id'] ?? '';
-                $name = $_POST['name'] ?? '';
-                $slug = $_POST['slug'] ?? '';
-                $price = $_POST['price'] ?? '';
-                $descrption = strip_tags(stripInlineStyles($_POST['descrption'] ?? ''));
-                // $description = $_POST['description'] ?? '';
-                $bedroom = $_POST['bedroom'] ?? '';
-                $size = $_POST['size'] ?? '';
-                $floor = $_POST['floor'] ?? '';
-                $garage = $_POST['garage'] ?? '';
-                $balcony = $_POST['balcony'] ?? '';
-                $address = $_POST['address'] ?? '';
-                $is_featured = $_POST['is_featured'] ?? '';
-                            // Check if the key exists before accessing it
-                    // $name =  isset($_POST['name']) ? $_POST['name'] : '';       
-                    // $slug = isset($_POST['slug']) ? $_POST['slug'] : '';
-                    // $price = isset($_POST['price']) ? $_POST['price'] : '';
-                    // $description = isset($_POST['description']) ? $_POST['description'] : '';
-                    // $bedroom = isset($_POST['bedroom']) ? $_POST['bedroom'] : '';
-                    // $size = isset($_POST['size']) ? $_POST['size'] : '';
-                    // $floor = isset($_POST['floor']) ? $_POST['floor'] : '';
-                    // $garage = isset($_POST['garage']) ? $_POST['garage'] : '';
-                    // $balcony = isset($_POST['balcony']) ? $_POST['balcony'] : '';
-                    // $address = isset($_POST['address']) ? $_POST['address'] : '';
-                    // $built_year = isset($_POST['built_year']) ? $_POST['built_year'] : '';
-                    // $map = isset($_POST['map']) ? $_POST['map'] : '';
-                    // $amenities = isset($_POST['amenities']) ? $_POST['amenities'] :
-
+                $description = strip_tags(stripInlineStyles($_POST['description'] ?? ''));
+               
                 $path = $_FILES['featured_photo']['name'];
                 $path_tmp = $_FILES['featured_photo']['tmp_name'];
 
@@ -174,8 +161,8 @@ if (!isset($_SESSION['agents'])) {
                         $_POST['location_id'],
                         $_POST['type_id'],
                         $amenities,
-                        $name,         
-                        $slug,         
+                        $_POST['name'],         
+                        $_POST['slug'],         
                         $description,  
                         $filename,
                         $_POST['price'],        
@@ -213,14 +200,8 @@ if (!isset($_SESSION['agents'])) {
       $statement = $conn->prepare("SELECT * FROM property WHERE id=?");
       $statement->execute([$id]);
       $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-       // Check if the $result array is not empty
-       if (!empty($result)) {
-        $result = $result[0];
-    } else {
-        $result = [];
-    }
-?>
+    //   var_dump($result);
+?>  
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
     <div class="bg"></div>
     <div class="container">
@@ -243,24 +224,24 @@ if (!isset($_SESSION['agents'])) {
                      <input type="hidden" name="id" value="<?php echo $id; ?>">
 
                     <div>
-                        <input type="hidden" name="current_feature_photo" value="<?php echo $result['feature_photo']; ?>">
+                        <input type="hidden" name="current_feature_photo" value="<?php echo $result[0]['feature_photo']; ?>">
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Name *</label>
-                            <input type="text" name="name" class="form-control" value="<?php echo isset($_POST['name']) ? $_POST['name'] : (isset($result['name']) ? $result['name'] : ''); ?>">
+                            <input type="text" name="name" class="form-control" value="<?php echo isset($_POST['name']) ? $_POST['name'] : (isset($result[0]['name']) ? $result[0]['name'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Slug *</label>
-                            <input type="text" name="slug" class="form-control" value="<?php echo isset($_POST['slug']) ? $_POST['slug'] : (isset($result['slug']) ? $result['slug'] : ''); ?>">
+                            <input type="text" name="slug" class="form-control" value="<?php echo isset($_POST['slug']) ? $_POST['slug'] : (isset($result[0]['slug']) ? $result[0]['slug'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Price *</label>
-                            <input type="text" name="price" class="form-control" value="<?php echo isset($_POST['price']) ? $_POST['price'] : (isset($result['price']) ? $result['price'] : ''); ?>">
+                            <input type="text" name="price" class="form-control" value="<?php echo isset($_POST['price']) ? $_POST['price'] : (isset($result[0]['price']) ? $result[0]['price'] : ''); ?>">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label for="" class="form-label">Description</label>
-                            <textarea name="description" class="form-control editor" cols="30" rows="10"><?php echo isset($_POST['description']) ? $_POST['description'] : (isset($result['description']) ? $result['description'] : ''); ?></textarea>
+                            <textarea name="description" class="form-control editor" cols="30" rows="10"><?php echo isset($_POST['description']) ? $_POST['description'] : (isset($result[0]['description']) ? $result[0]['description'] : ''); ?></textarea>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Location *</label>
@@ -271,7 +252,7 @@ if (!isset($_SESSION['agents'])) {
                                     $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($result1 as $row) {
                                         ?>
-                                              <option value="<?php echo $row['id']; ?>" <?php if(isset($_POST['location_id']) && $_POST['location_id'] == $row['id']) {echo 'selected';} elseif($result['location_id'] == $row['id']) {echo 'selected';} ?>> <?php echo $row['name']; ?></option>
+                                              <option value="<?php echo $row['id']; ?>" <?php if(isset($_POST['location_id']) && $_POST['location_id'] == $row['id']) {echo 'selected';} elseif($result[0]['location_id'] == $row['id']) {echo 'selected';} ?>> <?php echo $row['name']; ?></option>
                                               <?php
                                     }
                                 ?>
@@ -286,7 +267,7 @@ if (!isset($_SESSION['agents'])) {
                                     $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($result1 as $row) {
                                         ?>
-                                            <option value="<?php echo $row['id']; ?>" <?php if(isset($_POST['type_id']) && $_POST['type_id'] == $row['id']) {echo 'selected';} elseif($result['type_id'] == $row['id']) {echo 'selected';} ?>> <?php echo $row['name']; ?></option>
+                                            <option value="<?php echo $row['id']; ?>" <?php if(isset($_POST['type_id']) && $_POST['type_id'] == $row['id']) {echo 'selected';} elseif($result[0]['type_id'] == $row['id']) {echo 'selected';} ?>> <?php echo $row['name']; ?></option>
                                             <?php
                                     }
                                 ?>
@@ -296,52 +277,52 @@ if (!isset($_SESSION['agents'])) {
                             <label for="" class="form-label">Purpose *</label>
                             <select name="purpose" class="form-control select2">
                                 
-                                <option value="Sale" <?php if(isset($_POST['purpose']) && $_POST['purpose'] == 'Sale') {echo 'selected';} elseif($result['purpose'] == 'Sale') {echo 'selected';} ?>>Sale</option>
-                                <option value="Rent" <?php if(isset($_POST['purpose']) && $_POST['purpose'] == 'Rent') {echo 'selected';} elseif($result['purpose'] == 'Rent') {echo 'selected';} ?>>Rent</option>
+                                <option value="Sale" <?php if(isset($_POST['purpose']) && $_POST['purpose'] == 'Sale') {echo 'selected';} elseif($result[0]['purpose'] == 'Sale') {echo 'selected';} ?>>Sale</option>
+                                <option value="Rent" <?php if(isset($_POST['purpose']) && $_POST['purpose'] == 'Rent') {echo 'selected';} elseif($result[0]['purpose'] == 'Rent') {echo 'selected';} ?>>Rent</option>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Bedrooms *</label>
-                                <input type="number" class="form-control" name="bedroom" min="0" value="<?php echo isset($_POST['bedroom']) ? $_POST['bedroom'] : (isset($result['bedroom']) ? $result['bedroom'] : ''); ?>">
+                                <input type="number" class="form-control" name="bedroom" min="0" value="<?php echo isset($_POST['bedroom']) ? $_POST['bedroom'] : (isset($result[0]['bedroom']) ? $result[0]['bedroom'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Bathrooms *</label>
-                            <input type="number" class="form-control" name="bathroom" min="0" value="<?php echo isset($_POST['bathroom']) ? $_POST['bathroom'] : (isset($result['bathroom']) ? $result['bathroom'] : ''); ?>"?>">
+                            <input type="number" class="form-control" name="bathroom" min="0" value="<?php echo isset($_POST['bathroom']) ? $_POST['bathroom'] : (isset($result[0]['bathroom']) ? $result[0]['bathroom'] : ''); ?>"?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Size (Sqft) *</label>
-                            <input type="text" class="form-control" name="size" value="<?php echo isset($_POST['size']) ? $_POST['size'] : (isset($result['size']) ? $result['size'] : ''); ?>">
+                            <input type="text" class="form-control" name="size" value="<?php echo isset($_POST['size']) ? $_POST['size'] : (isset($result[0]['size']) ? $result[0]['size'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Floor</label>
-                            <input type="number" class="form-control" name="floor" min="0" value="<?php echo isset($_POST['floor']) ? $_POST['floor'] : (isset($result['floor']) ? $result['floor'] : ''); ?>">
+                            <input type="number" class="form-control" name="floor" min="0" value="<?php echo isset($_POST['floor']) ? $_POST['floor'] : (isset($result[0]['floor']) ? $result[0]['floor'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Garage</label>
-                            <input type="number" class="form-control" name="garage" min="0" value="<?php echo isset($_POST['garage']) ? $_POST['garage'] : (isset($result['garage']) ? $result['garage'] : ''); ?>">
+                            <input type="number" class="form-control" name="garage" min="0" value="<?php echo isset($_POST['garage']) ? $_POST['garage'] : (isset($result[0]['garage']) ? $result[0]['garage'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Balcony</label>
-                            <input type="number" class="form-control" name="balcony" min="0" value="<?php echo isset($_POST['balcony']) ? $_POST['balcony'] : (isset($result['balcony']) ? $result['balcony'] : ''); ?>">
+                            <input type="number" class="form-control" name="balcony" min="0" value="<?php echo isset($_POST['balcony']) ? $_POST['balcony'] : (isset($result[0]['balcony']) ? $result[0]['balcony'] : ''); ?>">
                         </div>
                         <div class="col-md-8 mb-3">
                             <label for="" class="form-label">Address</label>
-                            <input type="text" name="address" class="form-control" value="<?php echo isset($_POST['address']) ? $_POST['address'] : (isset($result['Address']) ? $result['Address'] : ''); ?>">
+                            <input type="text" name="address" class="form-control" value="<?php echo isset($_POST['address']) ? $_POST['address'] : (isset($result[0]['Address']) ? $result[0]['Address'] : ''); ?>">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Built Year</label>
-                            <input type="text" name="built_year" class="form-control" value="<?php echo isset($_POST['built_year']) ? $_POST['built_year'] : (isset($result['built_year']) ? $result['built_year'] : ''); ?>">
+                            <input type="text" name="built_year" class="form-control" value="<?php echo isset($_POST['built_year']) ? $_POST['built_year'] : (isset($result[0]['built_year']) ? $result[0]['built_year'] : ''); ?>">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label for="" class="form-label">Location Map</label>
-                            <textarea name="map" class="form-control h-150" cols="30" rows="10"><?php echo isset($_POST['map']) ? $_POST['map'] : (isset($result['map']) ? $result['map'] : ''); ?></textarea>
+                            <textarea name="map" class="form-control h-150" cols="30" rows="10"><?php echo isset($_POST['map']) ? $_POST['map'] : (isset($result[0]['map']) ? $result[0]['map'] : ''); ?></textarea>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Is Featured? *</label>
                             <select name="is_featured" class="form-control select2">
                                 
-                                <option value="Yes" <?php if(isset($_POST['is_featured']) && $_POST['is_featured'] == 'Yes') {echo 'selected';} elseif($result['is_featured'] == 'Yes') {echo 'selected';} ?>>Yes</option>
-                                <option value="No" <?php if(isset($_POST['is_featured']) && $_POST['is_featured'] == 'No') {echo 'selected';} elseif($result['is_featured'] == 'No') {echo 'selected';} ?>>No</option>
+                                <option value="Yes" <?php if(isset($_POST['is_featured']) && $_POST['is_featured'] == 'Yes') {echo 'selected';} elseif($result[0]['is_featured'] == 'Yes') {echo 'selected';} ?>>Yes</option>
+                                <option value="No" <?php if(isset($_POST['is_featured']) && $_POST['is_featured'] == 'No') {echo 'selected';} elseif($result[0]['is_featured'] == 'No') {echo 'selected';} ?>>No</option>
                             </select>
                         </div>
                         <div class="col-md-12 mb-3">
@@ -349,7 +330,7 @@ if (!isset($_SESSION['agents'])) {
     <div class="row">
         <?php
             $i = 0;
-            $temp_arr = array_map('intval', array_map('trim', explode(',', $result['amenities'])));
+            $temp_arr = array_map('intval', array_map('trim', explode(',', $result[0]['amenities'])));
             $statement = $conn->prepare("SELECT * FROM amenities ORDER BY name ASC");
             $statement->execute();
             $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -380,7 +361,7 @@ if (!isset($_SESSION['agents'])) {
                         <div class="col-md-4 mb-3">
                             <label for="" class="form-label">Existing Featured Photo </label>
                                 <div>
-                                <img src="<?php echo BASE_URL; ?>uploads/property/<?php echo $result['feature_photo']; ?>" alt="" class="w-200">
+                                <img src="<?php echo BASE_URL; ?>uploads/property/<?php echo $result[0]['feature_photo']; ?>" alt="" class="w-200">
                                 </div>
                         </div>
                         <div class="col-md-4 mb-3">

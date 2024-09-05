@@ -5,6 +5,7 @@ require_once('header.php');
     if(!isset($_SESSION['agents']))
     {
         header('location: '.BASE_URL.'agent-login');
+        exit;
     }
 ?>
 <?php
@@ -68,6 +69,7 @@ require_once('header.php');
         // print_r($response);
         // echo "</pre>";
         header('location: '.$response->url);
+        exit;
     }
 ?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">

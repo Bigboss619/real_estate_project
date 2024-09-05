@@ -5,6 +5,7 @@ require_once('header.php');
     if(!isset($_SESSION['customer']))
     {
         header('location: '.BASE_URL.'customer-login');
+        exit;
     }
 ?>
 <div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>'uploads/banner.jpg')">

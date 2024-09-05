@@ -3,6 +3,13 @@
 use Money\Exchange;
 
  require_once('top.php'); ?>
+   <?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
 
 <?php
    try {

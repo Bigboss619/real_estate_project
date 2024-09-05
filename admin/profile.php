@@ -2,6 +2,13 @@
 require_once('header.php');
 ?>
 <?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
+<?php
 if(isset($_POST['update_form']))
 {
     try {
@@ -81,6 +88,7 @@ if(isset($_POST['update_form']))
             $_SESSION['admin']['email'] = $_POST['email'];
 
             header('location: ' . ADMIN_URL . 'dashboard.php');
+            exit;
     } catch (Exception $e) {
         $error_message = $e->getMessage();
     }

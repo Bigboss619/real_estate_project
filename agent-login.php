@@ -5,6 +5,7 @@
     if(isset($_SESSION['agent']))
     {
         header('location: '.BASE_URL.'agent-dashboard');
+        exit;
     }
 ?>
 <?php

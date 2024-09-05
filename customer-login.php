@@ -5,6 +5,7 @@
     if(isset($_SESSION['customer']))
     {
         header('location: '.BASE_URL.'customer-dashboard');
+        exit;
     }
 ?>
 <?php

@@ -3,6 +3,7 @@
 if(isset($_SESSION['admin']))
 {
     header('location: '.ADMIN_URL.'dashboard.php');
+    exit;
 }
 ?>
 <?php

@@ -1,5 +1,11 @@
 <?php require_once('header.php'); ?>
-
+<?php
+    if(!isset($_SESSION['agent']))
+    {
+        header('location: '.BASE_URL.'agent-login');
+        exit;
+    }
+?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
     <div class="bg"></div>
     <div class="container">
@@ -40,6 +46,11 @@
                                      ORDER BY orders.id DESC");
                             $statement->execute([$_SESSION['agents']['id']]);
                             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                            $total = $statement->rowCount();
+                            if(!$total)
+                            {
+                                echo '<div class="alert alert-danger">No orders found</div>';
+                            }else{
                             foreach ($result as $row) {
                                 $i++;
                             ?>
@@ -71,6 +82,7 @@
                                 </tr>
                             <?php
                             }
+                        }
                             ?>
                         </tbody>
                     </table>

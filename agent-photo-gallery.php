@@ -1,5 +1,12 @@
 <?php require_once('header.php'); ?>
 <?php
+    if(!isset($_SESSION['agents']))
+    {
+        header('location: '.BASE_URL.'agent-login');
+        exit;
+    }
+?>
+<?php
     $statement = $conn->prepare("SELECT * FROM property WHERE id=?");
     $statement->execute([$_GET['id']]);
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);

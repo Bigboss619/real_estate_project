@@ -1,5 +1,11 @@
 <?php require_once('header.php'); ?>
 <?php
+    if(!isset($_SESSION['agents'])){
+        header('Location: ' . BASE_URL . 'agent-login');
+        exit;
+    }
+?>
+<?php
 if(isset($_POST['form_update']))
 {
     try {

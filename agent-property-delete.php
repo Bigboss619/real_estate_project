@@ -4,6 +4,18 @@
     if(!isset($_SESSION['agents']))
     {
         header('location: ' . BASE_URL . 'agent-login');
+        exit;
+    }
+    // This make sure agent only edit his post and not another agent post
+    $id = $_GET['id'];
+    $statement = $conn->prepare("SELECT * FROM property WHERE id=? AND agent_id=?");
+    $statement->execute([$id,$_SESSION['agent']['id']]);
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $total = $statement->rowCount();
+    if(!$total)
+    {
+      header('location: ' . BASE_URL. 'agent-login');
+      exit;
     }
 ?>
 

@@ -1,5 +1,12 @@
 <?php require_once('header.php'); ?>
 <?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
+<?php
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\SMTP;
     use PHPMailer\PHPMailer\Exception;

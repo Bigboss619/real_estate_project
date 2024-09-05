@@ -1,8 +1,11 @@
-<?php require_once('header.php'); ?>
-<?php require_once('nav.php'); ?>
-
-<?php require_once('sidebar.php'); ?>
-
+<?php require_once('top.php'); ?>
+<?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
 <div class="main-content">
     <section class="section">
         <div class="section-header">
@@ -18,7 +21,7 @@
                                     <div class="form-group mb-3">
                                         <label>Existing Photo</label>
                                         <div>
-                                            <img src="<?php echo BASE_URL;  ?>uploads/logo.png" alt="" class="w_100">
+                                            <img src="<?php echo ADMIN_URL;  ?>uploads/logo.png" alt="" class="w_100">
                                         </div>
                                     </div>
                                     <div class="form-group mb-3">

@@ -2,6 +2,13 @@
     require_once 'header.php';
 ?>
 <?php
+    if(!isset($_SESSION['agents']))
+    {
+        header('location: '.BASE_URL.'agent-login');
+        exit;
+    }
+?>
+<?php
     if (array_key_exists('paymentId', $_GET) && array_key_exists('PayerID', $_GET)) {
         $transaction = $gateway->completePurchase(array(
             'payer_id' => $_GET['PayerID'],

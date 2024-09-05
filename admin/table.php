@@ -1,7 +1,11 @@
-<?php require_once('header.php'); ?>
-<?php require_once('nav.php'); ?>
-<?php require_once('sidebar.php'); ?>
-
+<?php require_once('top.php'); ?>
+<?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
 <div class="main-content">
 <section class="section">
 <div class="section-header">

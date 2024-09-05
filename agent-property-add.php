@@ -2,7 +2,20 @@
 <?php
 if (!isset($_SESSION['agents'])) {
     header('location: ' . BASE_URL . 'agent-login');
+    exit;
 }
+
+// If this agent did not purchase any package, he will be redirected to payment page
+$statement = $conn->prepare("SELECT * FROM orders WHERE agent_id=?");
+$statement->execute([$_SESSION['agents']['id']]);
+$total = $statement->rowCount();
+if(!$total)
+{
+    $_SESSION['error_message'] = 'Please purchase a package first';
+    header('location: ' . BASE_URL . 'agent-payment');
+    exit;
+}
+
 ?>
 <?php
     if(isset($_POST['form_submit']))

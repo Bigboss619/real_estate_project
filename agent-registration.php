@@ -18,7 +18,7 @@
             if(!filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Email is invalid");
             }
-            $statement = $pdo->prepare("SELECT * FROM customer WHERE email=?");
+            $statement = $conn->prepare("SELECT * FROM agents WHERE email=?");
             $statement->execute([$_POST['email']]);
             $total = $statement->rowCount();
             if($total > 0) {

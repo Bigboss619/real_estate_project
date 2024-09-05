@@ -1,4 +1,11 @@
 <?php require_once('top.php'); ?>
+<?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
 <div class="main-content">
 <section class="section">
 <div class="section-header justify-content-between">
@@ -35,7 +42,7 @@
             <tr>
                 <td><?php echo $i; ?></td>
                 <td>
-                    <img src="<?php echo BASE_URL; ?>uploads/location/<?php echo $row['photo']; ?>" alt="" class="w_200" srcset="">
+                    <img src="<?php echo ADMIN_URL; ?>uploads/location/<?php echo $row['photo']; ?>" alt="" class="w_200" srcset="">
                 </td>
                 <td><?php echo $row['name']; ?></td>
                 <td><?php echo $row['slag']; ?></td>

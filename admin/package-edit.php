@@ -1,5 +1,12 @@
     <?php require_once('top.php'); ?>
     <?php
+    if(!isset($_SESSION['admin']))
+    {
+        header('location: '.ADMIN_URL.'login.php');
+        exit;
+    }
+?>
+    <?php
 
     if (!isset($_GET['id']) || empty($_GET['id'])) {
         die('ID parameter is missing');
