@@ -16,6 +16,24 @@
    if(isset($_POST['form_submit']))
    {
         try {
+            // IF this agent already added his number of allowed photo, he will be redirected to the properties view page and any of the added properties should be removed in order to add a new one or he can upgrade his package
+            $statement = $conn->prepare("SELECT * FROM orders 
+            JOIN packages ON orders.package_id = packages.id
+            WHERE orders.agent_id=? AND orders.currently_active=?");
+            $statement->execute([$_SESSION['agents']['id'],1]);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result as $row) {
+                $allowed_photo = $row['allowed_photo'];
+            }
+
+            $statement = $conn->prepare("SELECT * FROM property_photo WHERE property_id=?");
+            $statement->execute([$_GET['id']]);
+            $total_photos = $statement->rowCount();
+            if($total_photos == $allowed_photo){
+                throw new Exception("Your reached the maximum limit to add photo. Please delete previous photos to add new one or you can upgrade your package");
+                header('location: ' . BASE_URL . 'agent-property');
+                exit;
+            }
             $path = $_FILES['photo']['name'];
             $path_tmp = $_FILES['photo']['tmp_name'];
             

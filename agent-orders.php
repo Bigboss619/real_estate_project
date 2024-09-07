@@ -1,6 +1,6 @@
 <?php require_once('header.php'); ?>
 <?php
-    if(!isset($_SESSION['agent']))
+    if(!isset($_SESSION['agents']))
     {
         header('location: '.BASE_URL.'agent-login');
         exit;
@@ -49,7 +49,7 @@
                             $total = $statement->rowCount();
                             if(!$total)
                             {
-                                echo '<div class="alert alert-danger">No orders found</div>';
+                                echo '<div class="alert alert-danger text-center">No orders found</div>';
                             }else{
                             foreach ($result as $row) {
                                 $i++;

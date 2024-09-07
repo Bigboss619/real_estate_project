@@ -16,6 +16,35 @@ if(!$total)
     exit;
 }
 
+    // If this agent's package is expired, he will be redirected to payment page
+
+    // IF this agent already added his number of allowed properties, he will be redirected to the properties view page and any of the added properties should be removed in order to add a new one
+    $statement = $conn->prepare("SELECT * FROM orders 
+    JOIN packages ON orders.package_id = packages.id
+    WHERE orders.agent_id=? AND orders.currently_active=?");
+    $statement->execute([$_SESSION['agents']['id'],1]);
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($result as $row) {
+        $allowed_properties = $row['allowed_properties'];
+
+        // This code check if the agent package is not expired, but if it is expired the agent can't add any properties
+        $expire_date = $row['expire_date'];
+    }
+    $statement = $conn->prepare("SELECT * FROM property WHERE agent_id=?");
+    $statement->execute([$_SESSION['agents']['id']]);
+    $total_properties = $statement->rowCount();
+    if($total_properties == $allowed_properties){
+        $_SESSION['error_message'] = 'You have already added the maximum number of allowed properties. Please remove any of the added properties in order to add a new one or you purchase a higher package';
+        header('location: ' . BASE_URL . 'agent-property');
+        exit;
+    }
+
+    // IF the expre date is passed, the agent will be redirected to the payment page
+    if(strtotime(date('Y-m-d')) > strtotime($expire_date)){
+        $_SESSION['error_message'] = 'Your package has expired. Please purchase a new package';
+        header('location: ' . BASE_URL . 'agent-payment');
+        exit;
+    }
 ?>
 <?php
     if(isset($_POST['form_submit']))
@@ -168,7 +197,7 @@ if(!$total)
                         ]);
                         $success_message = 'Property is added successfully';
                         $_SESSION['success_message'] = $success_message;
-                        header('location: ' . BASE_URL . 'agent-property-add');
+                        header('location: ' . BASE_URL . 'agent-property');
                         exit;
                     }
                     else
@@ -182,6 +211,8 @@ if(!$total)
         }
             catch (Exception $e) {
             $error_message = $e->getMessage();
+            header('location: ' . BASE_URL . 'agent-property-add');
+                        exit;
         }
     }
 ?>

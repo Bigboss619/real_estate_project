@@ -16,13 +16,29 @@
    if(isset($_POST['form_submit']))
    {
         try {
+                // IF this agent already added his maximum number of allowed video, he will be redirected to the properties view page and any of the added properties should be removed in order to add a new one or he can upgrade his package
+                $statement = $conn->prepare("SELECT * FROM orders 
+                JOIN packages ON orders.package_id = packages.id
+                WHERE orders.agent_id=? AND orders.currently_active=?");
+                $statement->execute([$_SESSION['agents']['id'],1]);
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($result as $row) {
+                    $allowed_videos = $row['allowed_videos'];
+                }
+
+                $statement = $conn->prepare("SELECT * FROM property_video WHERE property_id=?");
+                $statement->execute([$_GET['id']]);
+                $total_videos = $statement->rowCount();
+                if($total_videos == $allowed_videos){
+                    throw new Exception("Your reached the maximum limit to add photo. Please delete previous photos to add new one or you can upgrade your package");
+                    header('location: ' . BASE_URL . 'agent-property');
+                    exit;
+                }
             if(empty($_POST['video_id']))
             {
                 throw new Exception("Video id cannot be empty");
                 
             }
-            
-            
             
 
                     $statement = $conn->prepare("INSERT INTO property_video (property_id, video_id) VALUES(?, ?)");

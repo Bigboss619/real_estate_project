@@ -19,12 +19,15 @@
                 $statement->execute();
                 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($result as $row) {
-                    if ($row['allowed_feature_properties'] == 0) {
+                    if ($row['allowed_properties'] == 0) {
                         $symbol = 'fas fa-times';
                         $number = 'No';
                     } else {
                         $symbol = 'fas fa-check'; 
                         $number = $row['allowed_feature_properties'];
+                        if($number == -1){
+                            $number = 'Unlimited';
+                        }
                     }
                     if ($row['allowed_photo'] == 0) {
                         $symbol2 = 'fas fa-times';
@@ -32,6 +35,9 @@
                     } else {
                         $symbol2 = 'fas fa-check';
                         $number2 = $row['allowed_photo'];
+                        if($number2 == -1){
+                            $number2 = 'Unlimited';
+                        }
                     }
                     if ($row['allowed_videos'] == 0) {
                         $symbol3 = 'fas fa-times';
@@ -39,6 +45,9 @@
                     } else {
                         $symbol3 = 'fas fa-check'; 
                         $number3 = $row['allowed_videos'];
+                        if($number3 == -1){
+                            $number3 = 'Unlimited';
+                        }
                     }
             ?>
                 <div class="col-lg-4 mb_30">
@@ -50,7 +59,7 @@
                             <hr />
                             <ul class="fa-ul">
                                 <li>
-                                    <span class="fa-li"><i class="fas fa-check"></i></span>5 Properties Allowed
+                                    <span class="fa-li"><i class="fas fa-check"></i></span><?php if($row['allowed_properties'] == -1) {echo 'Unlimited';} else{ echo $row['allowed_properties'];} ?> Properties Allowed
                                 </li>
                                 <li>
                                     <span class="fa-li"><i class="<?php echo $symbol; ?>"></i></span><?php echo $number; ?> Featured Property

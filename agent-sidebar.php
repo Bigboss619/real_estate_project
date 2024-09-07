@@ -9,14 +9,11 @@
                 <li class="list-group-item <?php if($cur_page == 'agent-orders.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>agent-order">Orders</a>
                 </li>
-                <li class="list-group-item <?php if($cur_page == 'agent-property-add.php') {echo 'active';} ?>">
+                <li class="list-group-item <?php if($cur_page == 'agent-property-add.php' || $cur_page == 'agent-photo-gallery.php' || $cur_page == 'agent-video-gallery.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>agent-property-add">Add Property</a>
                 </li>
                 <li class="list-group-item <?php if($cur_page == 'agent-properties.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>agent-property">All Properties</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="user-wishlist.html">Wishlist</a>
                 </li>
                 <li class="list-group-item <?php if($cur_page == 'agent-edit-profile.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>agent-edit-profile">Edit Profile</a>

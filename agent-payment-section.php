@@ -37,39 +37,58 @@ require_once('header.php');
     }
 
     if(isset($_POST['form_stripe'])) {
-        $statement = $conn->prepare("SELECT * FROM packages WHERE id=?");
-            $statement->execute([$_POST['package_id']]);
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            foreach($result as $row)
-            {
-                $package_name = $row['name'];
-                $_SESSION['package_id'] = $row['id'];
-                $_SESSION['price'] = $row['price'];
-                $_SESSION['allowed_days'] = $row['allowed_days'];
-            }
-        \Stripe\Stripe::setApiKey(STRIPE_TEST_SK);
-        $response = \Stripe\Checkout\Session::create([
-            'line_items' => [
-                [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => 'Package Name: ' . $package_name
+
+            try {
+                $statement = $conn->prepare("SELECT * FROM packages WHERE id=?");
+                 $statement->execute([$_POST['package_id']]);
+                 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                foreach($result as $row)
+                {
+                    $package_name = $row['name'];
+                    $allowed_properties = $row['allowed_properties'];
+                    $_SESSION['package_id'] = $row['id'];
+                    $_SESSION['price'] = $row['price'];
+                    $_SESSION['allowed_days'] = $row['allowed_days'];
+                }
+                $statement = $conn->prepare("SELECT * FROM property WHERE agent_id=?");
+                $statement->execute([$_SESSION['agents']['id']]);
+                $total_properties =  $statement->rowCount();
+                if($total_properties != -1){
+                    if($total_properties > $allowed_properties){
+                        unset($_SESSION['package_id']);
+                        unset($_SESSION['price']);
+                        unset($_SESSION['allowed_days']);
+                        throw new Exception("You are going to downgrade your package. Please ddelete some properties first so that it does not exceed the selected package\'s total allowed properties limit.");
+                        
+                    }
+                }   
+                \Stripe\Stripe::setApiKey(STRIPE_TEST_SK);
+                $response = \Stripe\Checkout\Session::create([
+                    'line_items' => [
+                        [
+                            'price_data' => [
+                                'currency' => 'usd',
+                                'product_data' => [
+                                    'name' => 'Package Name: ' . $package_name
+                                ],
+                                'unit_amount' => $_SESSION['price'] * 100,
+                            ],
+                            'quantity' => 1,
                         ],
-                        'unit_amount' => $_SESSION['price'] * 100,
                     ],
-                    'quantity' => 1,
-                ],
-            ],
-            'mode' => 'payment',
-            'success_url' => STRIPE_SUCCESS_URL. '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => STRIPE_CANCEL_URL,
-        ]);
-        // echo "<pre>";
-        // print_r($response);
-        // echo "</pre>";
-        header('location: '.$response->url);
-        exit;
+                    'mode' => 'payment',
+                    'success_url' => STRIPE_SUCCESS_URL. '?session_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => STRIPE_CANCEL_URL,
+                ]);
+                header('location: '.$response->url);
+                exit;
+            } catch (Exception $e) {
+                $_SESSION['error_message'] = $e->getMessage();
+                header('Location: ' . BASE_URL . 'agent-payment');
+                    exit;
+            }
+            
+      
     }
 ?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">

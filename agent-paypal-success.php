@@ -26,7 +26,7 @@
             $payment_status = $arr_body['state'];
      
             // Prevoius currently_ative to o
-            $statement = $pdo->prepare("UPDATE orders SET currently_active=? WHERE agent_id=? AND currently_active=?");
+            $statement = $conn->prepare("UPDATE orders SET currently_active=? WHERE agent_id=? AND currently_active=?");
             $statement->execute(array(0, $_SESSION['agents']['id'], 1));
 
             $statement->execute([$_POST['firstname'],$_POST['lastname'],$_POST['id']]);
@@ -48,7 +48,7 @@
                 unset($_SESSION['price']);
                 unset($_SESSION['allowed_days']);
 
-                header('Location: ' . BASE_URL . 'agent-orders');
+                header('Location: ' . BASE_URL . 'agent-order');
                 exit;
             // echo "Payment is successful. Your transaction id is: ". $payment_id;
         } else {
