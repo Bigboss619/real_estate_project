@@ -86,6 +86,30 @@ if (!isset($_SESSION['agents'])) {
                 {
                     throw new Exception("Map can not be empty");
                 }
+                
+                if($_POST['is_featured'] == 'Yes'){
+                    $statement = $conn->prepare("SELECT * FROM orders o
+                    JOIN packages p
+                    ON o.package_id = p.id
+                    WHERE o.agent_id=? AND o.currently_active=?");
+                    $statement->execute([$_SESSION['agents']['id'],1]);
+                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($result as $row) {
+                            $allowed_feature_properties = $row['allowed_feature_properties'];
+                    }
+                    if($allowed_feature_properties == 0){
+                        throw new Exception("You are not allowed to add new features");
+                    }
+
+                    // Checks how many featured property you have added
+                    $statement = $pdo->prepare("SELECT * FROM property WHERE agent_id=? AND is_featured=?");
+                    $statement->execute([$_SESSION['agents']['id'], 'Yes']);
+                    $total_featured_added = $statement->rowCount();
+                    if($total_featured_added == $allowed_feature_properties){
+                        throw new Exception("You have no featured property left. Please upgrade your package.");
+                        
+                    }
+                }    
                 if(isset($_POST['amenities']) && !empty($_POST['amenities']))
                 {
                     $amenities = '';

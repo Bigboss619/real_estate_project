@@ -16,10 +16,25 @@ require_once('header.php');
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach($result as $row)
             {
+                $package_name = $row['name'];
+                $allowed_properties = $row['allowed_properties'];
                 $_SESSION['package_id'] = $row['id'];
                 $_SESSION['price'] = $row['price'];
                 $_SESSION['allowed_days'] = $row['allowed_days'];
             }
+            $statement = $conn->prepare("SELECT * FROM property WHERE agent_id=?");
+                $statement->execute([$_SESSION['agents']['id']]);
+                $total_properties =  $statement->rowCount();
+
+                if($total_properties != -1){
+                    if($total_properties > $allowed_properties){
+                        unset($_SESSION['package_id']);
+                        unset($_SESSION['price']);
+                        unset($_SESSION['allowed_days']);
+                        throw new Exception("You are going to downgrade your package. Please ddelete some properties first so that it does not exceed the selected package\'s total allowed properties limit.");
+                        
+                    }
+                } 
             $response = $gateway->purchase(array(
                 'amount' => $_SESSION['price'],
                 'currency' => PAYPAL_CURRENCY,
@@ -32,7 +47,9 @@ require_once('header.php');
                 echo $response->getMessage();
             }
         } catch(Exception $e) {
-            echo $e->getMessage();
+                $_SESSION['error_message'] = $e->getMessage();
+                header('Location: ' . BASE_URL . 'agent-payment');
+                    exit;
         }
     }
 
@@ -53,15 +70,16 @@ require_once('header.php');
                 $statement = $conn->prepare("SELECT * FROM property WHERE agent_id=?");
                 $statement->execute([$_SESSION['agents']['id']]);
                 $total_properties =  $statement->rowCount();
+
                 if($total_properties != -1){
                     if($total_properties > $allowed_properties){
                         unset($_SESSION['package_id']);
                         unset($_SESSION['price']);
                         unset($_SESSION['allowed_days']);
-                        throw new Exception("You are going to downgrade your package. Please ddelete some properties first so that it does not exceed the selected package\'s total allowed properties limit.");
+                        throw new Exception("You are going to downgrade your package. Please delete some properties first so that it does not exceed the selected package\'s total allowed properties limit.");
                         
                     }
-                }   
+                }    
                 \Stripe\Stripe::setApiKey(STRIPE_TEST_SK);
                 $response = \Stripe\Checkout\Session::create([
                     'line_items' => [
