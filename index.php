@@ -12,27 +12,27 @@
                         </p>
                     </div>
                     <div class="search-section">
-                        <form action="" method="post">
+                        <form action="<?php echo BASE_URL; ?>properties.php" method="get">
                             <div class="inner">
                                 <div class="row">
-                                    <div class="col-lg-3">
+                                    <!-- <div class="col-lg-3">
                                         <div class="form-group">
-                                            <input type="text" name="" class="form-control" placeholder="Find Anything ...">
+                                            <input type="text" name="name" class="form-control" placeholder="Find Anything ...">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <select name="" class="form-select select2">
-                                                <option value="">Select Location</option>
+                                            <select name="location_id" class="form-select select2">
+                                                <option value="">All Location</option>
                                                 <?php
                                                 $statement = $conn->prepare("SELECT * FROM locations ORDER BY name ASC");
                                                 $statement->execute();
                                                 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 foreach ($result as $row) {
-                                                    ?>
-                                                      <option value=""><?php echo $row['name']; ?></option>
+                                                ?>
+                                                    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
 
-                                                    <?php
+                                                <?php
                                                 }
                                                 ?>
                                             </select>
@@ -40,20 +40,23 @@
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <select name="" class="form-select select2">
-                                                <option value="">Select Type</option>
-                                                <option value="">Apartment</option>
-                                                <option value="">Bungalow</option>
-                                                <option value="">Cabin</option>
-                                                <option value="">Condo</option>
-                                                <option value="">Cottage</option>
-                                                <option value="">Duplex</option>
-                                                <option value="">Townhouse</option>
-                                                <option value="">Villa</option>
+                                            <select name="type_id" class="form-select select2">
+                                                <option value="">All Type</option>
+                                                <?php
+                                                $statement = $conn->prepare("SELECT * FROM types ORDER BY name ASC");
+                                                $statement->execute();
+                                                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                                foreach ($result as $row) {
+                                                ?>
+                                                    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                                                <?php
+                                                }
+                                                ?>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
+                                        <input type="hidden" name="p" value="1">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-search"></i>
                                             Search
@@ -82,7 +85,7 @@
         </div>
         <div class="row">
             <?php
-                $statement = $conn->prepare("SELECT p.*,
+            $statement = $conn->prepare("SELECT p.*,
                  l.name as location_name,
                  t.name as type_name,
                  a.fullname, a.company, a.photo
@@ -94,71 +97,74 @@
                   JOIN agents a
                   ON p.agent_id = a.id
                  WHERE p.is_featured=? LIMIT 6");
-                $statement->execute(['Yes']);
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                $total = $statement->rowCount();
-                if(!$total){
-                    ?>
-                        <div class="col-md-12">
-                            No Property Found
-                        </div>
-                    <?php   
-                }   
-                else{
-                    foreach($result as $row){
-                        ?>
-                                  <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="item">
-                        <div class="photo">
-                            <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
-                            <div class="top">
-                                <div class="status-<?php if($row['purpose'] == 'Rent') {echo 'rent';} else{echo 'sale';} ?> ">
-                                    For <?php echo $row['purpose']; ?>
-                                </div>
-                                <div class="featured">
-                                    Featured
-                                </div>
-                            </div>
-                            <div class="price">$<?php echo $row['price']; ?></div>
-                            <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
-                        </div>
-                        <div class="text">
-                            <h3><a href="property.html"><?php echo $row['name']; ?></a></h3>
-                            <div class="detail">
-                                <div class="stat">
-                                    <div class="i1"><?php echo $row['size']; ?>sqft</div>
-                                    <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
-                                    <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
-                                </div>
-                                <div class="address">
-                                    <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
-                                </div>
-                                <div class="type-location">
-                                    <div class="i1">
-                                        <i class="fas fa-edit"></i> <?php echo $row['type_name']; ?>
-                                    </div>
-                                    <div class="i2">
-                                        <i class="fas fa-location-arrow"></i> <?php echo $row['location_name']; ?>
-                                    </div>
-                                </div>
-                                <div class="agent-section">
-                                    <?php if(empty($row['photo'])): ?>
-                                        <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
-                                    <?php else: ?>
-                                        <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
-                                    <?php endif; ?>
-                                    
-                                    <a href=""><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>)</a>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-            </div>
-                        <?php
-                    }
-                }   
+            $statement->execute(['Yes']);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $total = $statement->rowCount();
+            if (!$total) {
             ?>
-          
+                <div class="col-md-12">
+                    No Property Found
+                </div>
+                <?php
+            } else {
+                foreach ($result as $row) {
+                ?>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="item">
+                            <div class="photo">
+                                <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
+                                <div class="top">
+                                    <div class="status-<?php if ($row['purpose'] == 'Rent') {
+                                                            echo 'rent';
+                                                        } else {
+                                                            echo 'sale';
+                                                        } ?> ">
+                                        For <?php echo $row['purpose']; ?>
+                                    </div>
+                                    <div class="featured">
+                                        Featured
+                                    </div>
+                                </div>
+                                <div class="price">$<?php echo $row['price']; ?></div>
+                                <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
+                            </div>
+                            <div class="text">
+                                <h3><a href="property.html"><?php echo $row['name']; ?></a></h3>
+                                <div class="detail">
+                                    <div class="stat">
+                                        <div class="i1"><?php echo $row['size']; ?>sqft</div>
+                                        <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
+                                        <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
+                                    </div>
+                                    <div class="address">
+                                        <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
+                                    </div>
+                                    <div class="type-location">
+                                        <div class="i1">
+                                            <i class="fas fa-edit"></i> <?php echo $row['type_name']; ?>
+                                        </div>
+                                        <div class="i2">
+                                            <i class="fas fa-location-arrow"></i> <?php echo $row['location_name']; ?>
+                                        </div>
+                                    </div>
+                                    <div class="agent-section">
+                                        <?php if (empty($row['photo'])): ?>
+                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
+                                        <?php else: ?>
+                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
+                                        <?php endif; ?>
+
+                                        <a href=""><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            <?php
+                }
+            }
+            ?>
+
 
         </div>
     </div>
@@ -349,26 +355,26 @@
             </div>
         </div>
         <div class="row">
-        <?php
+            <?php
             $statement = $conn->prepare("SELECT * FROM locations ORDER BY name ASC");
             $statement->execute();
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
-                ?>
-                   <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="item">
-                            <div class="photo">
-                                <a href=""><img src="<?php BASE_URL; ?>uploads/<?php echo $row['photo']; ?>" alt=""></a>
-                            </div>
-                            <div class="text">
-                                <h2><a href=""><?php echo $row['name']; ?></a></h2>
-                                <h4>(10 Properties)</h4>
-                            </div>
+            ?>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="item">
+                        <div class="photo">
+                            <a href=""><img src="<?php BASE_URL; ?>uploads/<?php echo $row['photo']; ?>" alt=""></a>
+                        </div>
+                        <div class="text">
+                            <h2><a href=""><?php echo $row['name']; ?></a></h2>
+                            <h4>(10 Properties)</h4>
                         </div>
                     </div>
-                <?php
+                </div>
+            <?php
             }
-        ?>
+            ?>
         </div>
     </div>
 </div>
