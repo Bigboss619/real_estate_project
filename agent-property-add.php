@@ -127,7 +127,7 @@ if(!$total)
                     }
 
                     // Checks how many featured property you have added
-                    $statement = $pdo->prepare("SELECT * FROM property WHERE agent_id=? AND is_featured=?");
+                    $statement = $conn->prepare("SELECT * FROM property WHERE agent_id=? AND is_featured=?");
                     $statement->execute([$_SESSION['agents']['id'], 'Yes']);
                     $total_featured_added = $statement->rowCount();
                     if($total_featured_added == $allowed_feature_properties){

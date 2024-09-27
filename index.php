@@ -12,7 +12,7 @@
                         </p>
                     </div>
                     <div class="search-section">
-                        <form action="<?php echo BASE_URL; ?>properties.php" method="get">
+                        <form action="<?php echo BASE_URL; ?>properties.php" method="GET">
                             <div class="inner">
                                 <div class="row">
                                     <!-- <div class="col-lg-3">
