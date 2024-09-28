@@ -1,5 +1,20 @@
-
-
+/* For Pagination */
+a .links-pagination {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    display: inline-block;
+    text-decoration: none;
+    background: lightblue;
+    color: #000;
+    font-size: 20px;
+    margin-bottom: 20px;
+    margin-right: 5px;
+}
+a.links_gray{
+    background: #ddd;
+}
 .main-part-users a
 {
     color: #d92228 !important;
@@ -2036,20 +2051,4 @@ h4.resume {
     border: 0;
     font-size: 12px;
     margin-top: 3px;
-}
-a.links {
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    line-height: 40px;
-    display: inline-block;
-    text-decoration: none;
-    background: lightblue;
-    color: #000;
-    font-size: 20px;
-    margin-bottom: 20px;
-    margin-right: 5px;
-}
-a.links_gray{
-    background: #ddd;
 }

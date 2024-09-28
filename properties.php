@@ -95,7 +95,7 @@
                         </div>
 
                         <div class="widget">
-                            <h2>Status</h2>
+                            <h2>Purpose</h2>
                             <select name="" class="form-control select2">
                                 <option value="">--- Select ---</option>
                                 <option value="">For Rent</option>
@@ -103,18 +103,26 @@
                             </select>
                         </div>
 
-                        <div class="widget">
-                            <h2>Amenities</h2>
-                            <select name="" class="form-control select2">
-                                <option value="">--- Select ---</option>
-                                <option value="">Free Wifi</option>
-                                <option value="">Swimming Pool</option>
-                                <option value="">Car Parking</option>
-                                <option value="">Air Conditioning</option>
-                                <option value="">Kitchen</option>
-                                <option value="">Gym and Fitness Center</option>
-                            </select>
-                        </div>
+        <div class="widget">
+            <h2>Amenities</h2>
+                <select name="type_id" class="form-select select2" onchange="this.form.submit()">
+                <option value="">All Types</option>
+                    <?php
+                        $statement = $conn->prepare("SELECT * FROM types ORDER BY name ASC");
+                        $statement->execute();
+                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($result as $row) 
+                        {
+                            ?>
+                                <option value="<?php echo $row['id']; ?>" <?php if(isset($_GET['type_id']))
+                                { if($_GET['type_id'] == $row['id']) {echo 'selected';} }?>>
+                                <?php echo $row['name']; ?></option>
+
+                            <?php
+                        }
+                    ?>
+                </select>
+        </div>
 
                         <div class="widget">
                             <h2>Bedrooms</h2>
@@ -191,8 +199,19 @@
 <?php
     $query = '';
     $query = $c_location_id.$c_type_id;
-    $per_page = 2;
-    $q = $conn->prepare("SELECT * FROM property WHERE 1=1 ".$query);
+    $per_page = 4;
+    $q = $conn->prepare("SELECT p.*,
+        l.name as location_name,
+        t.name as type_name,
+        a.fullname, a.company, a.photo
+        FROM property p
+        JOIN locations l
+        ON p.location_id = l.id
+        JOIN types t 
+        ON p.type_id = t.id
+        JOIN agents a
+        ON p.agent_id = a.id
+         WHERE 1=1 ".$query." ORDER BY p.is_featured DESC");
     $q->execute();
     $total = $q->rowCount();
     $total_pages = ceil($total/$per_page);
@@ -216,11 +235,8 @@
     }
     ?>
     <?php
-    $statement = $conn->prepare("SELECT * FROM property WHERE 1=1 ".$query);
-    $statement->execute();
-    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     $total_row = $statement->rowCount();
-    foreach ($result as $row) {
+    foreach ($res as $row) {
     if(!in_array($row['id'],$arr1)) {
     continue;
     }
@@ -230,38 +246,44 @@
                     <div class="photo">
                         <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
                         <div class="top">
-                            <div class="status-sale">
-                                For Sale
+                        <div class="status-<?php if ($row['purpose'] == 'Rent') {echo 'rent';} else {echo 'sale';} ?> ">
+                                For <?php echo $row['purpose']; ?>
                             </div>
+                            <?php if($row['is_featured'] == 'Yes'): ?>
                             <div class="featured">
-                                Featured
+                               Featured
                             </div>
+                            <?php endif; ?>
                         </div>
-                        <div class="price">$56,000</div>
+                        <div class="price"><?php echo $row['price']; ?></div>
                         <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
                     </div>
                     <div class="text">
                         <h3><a href="property.html"><?php echo $row['name']; ?></a></h3>
                         <div class="detail">
                             <div class="stat">
-                                <div class="i1">2500 sqft</div>
-                                <div class="i2">2 Bed</div>
-                                <div class="i3">2 Bath</div>
+                                <div class="i1"><?php echo $row['size']; ?></div>
+                                <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
+                                <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
                             </div>
                             <div class="address">
-                                <i class="fas fa-map-marker-alt"></i> 937 Jamajo Blvd, Orlando FL 32803
+                                <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
                             </div>
                             <div class="type-location">
                                 <div class="i1">
-                                    <i class="fas fa-edit"></i> Villa
+                                    <i class="fas fa-edit"></i> <?php echo $row['location_name']; ?>
                                 </div>
                                 <div class="i2">
-                                    <i class="fas fa-location-arrow"></i> Orland
+                                    <i class="fas fa-location-arrow"></i> <?php echo $row['type_name']; ?>
                                 </div>
                             </div>
                             <div class="agent-section">
-                                <img class="agent-photo" src="uploads/agent1.jpg" alt="">
-                                <a href="">Robert Johnson (AA Property)</a>
+                                         <?php if (empty($row['photo'])): ?>
+                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
+                                        <?php else: ?>
+                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
+                                        <?php endif; ?>
+                                <a href=""><?php echo $row['fullname']; ?></a>
                             </div>
                         </div>
                     </div>
@@ -271,27 +293,36 @@
     }
 
     if($total_row):
+    
+    $common_url_part = BASE_URL.'properties.php?location_id='.$_GET['location_id'].'&type_id='.$_GET['type_id'];
+
+    ?>
+        <div class="col-md-12">  
+    <?php
     if(isset($_REQUEST['p'])) {
     if($_REQUEST['p'] == 1) {
-    echo '<a class="links" href="javascript:void;" style="background:#ddd;"> << </a>';
+    echo '<a class="links-pagination links_gray" href="javascript:void;"> << </a>';
     } else {
-    echo '<a class="links" href="http://localhost/php_practice/index.php?p='.($_REQUEST['p']-1).'"> << </a>';
+    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p='.($_REQUEST['p']-1).'"> << </a>';
     }
     } else {
-    echo '<a class="links" href="javascript:void;" style="background:#ddd;"> << </a>';
+    echo '<a class="links-pagination links_gray" href="javascript:void;"> << </a>';
     }
     for($i=1;$i<=$total_pages;$i++) {
-    echo '<a class="links" href="http://localhost/php_practice/index.php?p='.$i.'">'.$i.'</a>';
+    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p='.$i.'">'.$i.'</a>';
     }
     if(isset($_REQUEST['p'])) {
     if($_REQUEST['p'] == $total_pages) {
-    echo '<a class="links" href="javascript:void;" style="background:#ddd;"> >> </a>';
+    echo '<a class="links-pagination links_gray" href="javascript:void;"> >> </a>';
     } else {
-    echo '<a class="links" href="http://localhost/php_practice/index.php?p='.($_REQUEST['p']+1).'"> >> </a>';
+    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p='.($_REQUEST['p']+1).'"> >> </a>';
     }
     } else {
-    echo '<a class="links" href="http://localhost/php_practice/index.php?p=2"> >> </a>';
+    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p=2"> >> </a>';
     }
+    ?>
+        </div>
+    <?php
 endif;
 ?>
 </div>
