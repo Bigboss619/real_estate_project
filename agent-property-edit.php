@@ -4,17 +4,22 @@ if (!isset($_SESSION['agents'])) {
     header('location: ' . BASE_URL . 'agent-login');
     exit;
 }
+
     // This make sure agent only edit his post and not another agent post
       $id = $_GET['id'];
-      $statement = $conn->prepare("SELECT * FROM property WHERE id=? AND agent_id=?");
-      $statement->execute([$id,$_SESSION['agents']['id']]);
-      $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $agent_id =  $_SESSION['agents']['id'];
+         
+      $statement = $conn->prepare("SELECT * FROM property WHERE id = ? AND agent_id = ?");
+      $statement->execute([$id, $agent_id]);
+      $result = $statement->fetch(PDO::FETCH_ASSOC);
       $total = $statement->rowCount();
-      if(!$total)
+      if($total == 0)
       {
         header('location: ' . BASE_URL. 'agent-login');
         exit;
       }
+      
+      
 ?>
 <?php
     if(isset($_POST['update']))
@@ -102,7 +107,7 @@ if (!isset($_SESSION['agents'])) {
                     }
 
                     // Checks how many featured property you have added
-                    $statement = $pdo->prepare("SELECT * FROM property WHERE agent_id=? AND is_featured=?");
+                    $statement = $conn->prepare("SELECT * FROM property WHERE agent_id=? AND is_featured=?");
                     $statement->execute([$_SESSION['agents']['id'], 'Yes']);
                     $total_featured_added = $statement->rowCount();
                     if($total_featured_added == $allowed_feature_properties){
@@ -244,7 +249,7 @@ if (!isset($_SESSION['agents'])) {
                 <?php require_once('agent-sidebar.php'); ?>
             </div>
             <div class="col-lg-9 col-md-12">
-                <form action="agent-property-edit.php" enctype="multipart/form-data" method="post">
+                <form action="" enctype="multipart/form-data" method="post">
                      <input type="hidden" name="id" value="<?php echo $id; ?>">
 
                     <div>

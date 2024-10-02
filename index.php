@@ -11,61 +11,66 @@
                             You can get your desired awesome properties, homes, condos etc. here by name, category or location.
                         </p>
                     </div>
-                    <div class="search-section">
-                        <form action="<?php echo BASE_URL; ?>properties.php" method="GET">
-                            <div class="inner">
-                                <div class="row">
-                                    <!-- <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <input type="text" name="name" class="form-control" placeholder="Find Anything ...">
-                                        </div>
-                                    </div> -->
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <select name="location_id" class="form-select select2">
-                                                <option value="">All Location</option>
-                                                <?php
-                                                $statement = $conn->prepare("SELECT * FROM locations ORDER BY name ASC");
-                                                $statement->execute();
-                                                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                                                foreach ($result as $row) {
-                                                ?>
-                                                    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <select name="type_id" class="form-select select2">
-                                                <option value="">All Type</option>
-                                                <?php
-                                                $statement = $conn->prepare("SELECT * FROM types ORDER BY name ASC");
-                                                $statement->execute();
-                                                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                                                foreach ($result as $row) {
-                                                ?>
-                                                    <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <input type="hidden" name="p" value="1">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-search"></i>
-                                            Search
-                                        </button>
-                                    </div>
-                                </div>
+        <div class="search-section">
+            <form action="<?php echo BASE_URL; ?>properties.php" method="GET">
+                <div class="inner">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <input type="text" name="name" class="form-control" placeholder="Find Anything ...">
                             </div>
-                        </form>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <select name="location_id" class="form-select select2">
+                                    <option value="">All Location</option>
+                                    <?php
+                                    $statement = $conn->prepare("SELECT * FROM locations ORDER BY name ASC");
+                                    $statement->execute();
+                                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result as $row) {
+                                    ?>
+                                        <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <select name="type_id" class="form-select select2">
+                                    <option value="">All Type</option>
+                                    <?php
+                                    $statement = $conn->prepare("SELECT * FROM types ORDER BY name ASC");
+                                    $statement->execute();
+                                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result as $row) {
+                                    ?>
+                                        <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <input type="hidden" name="amenity_id" value="">
+                            <input type="hidden" name="purpose" value="">
+                            <input type="hidden" name="bedroom" value="">
+                            <input type="hidden" name="bathroom" value="">
+                            <input type="hidden" name="price" value="">
+                            <input type="hidden" name="p" value="1">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                                Search
+                            </button>
+                        </div>
                     </div>
+                </div>
+            </form>
+        </div>
                 </div>
             </div>
         </div>
