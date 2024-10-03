@@ -124,7 +124,7 @@
      }
 
 ?>
-<div class="page-top" style="background-image: url('uploads/banner.jpg')">
+<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg)">
         <div class="bg"></div>
         <div class="container">
             <div class="row">
@@ -335,7 +335,7 @@
                         <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
                     </div>
                     <div class="text">
-                        <h3><a href="property.html"><?php echo $row['name']; ?></a></h3>
+                        <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
                         <div class="detail">
                             <div class="stat">
                                 <div class="i1"><?php echo $row['size']; ?></div>

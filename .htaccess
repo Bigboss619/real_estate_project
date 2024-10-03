@@ -19,10 +19,12 @@ RewriteRule  ^agent-edit-profile$                agent-edit-profile.php         
 RewriteRule  ^agent-payment$                     agent-payment-section.php             [NC,L]
 RewriteRule  ^agent-order$                       agent-orders.php                      [NC,L]
 RewriteRule  ^agent-property-add$                agent-property-add.php                [NC,L]
-RewriteRule  ^agent-property$                     agent-properties.php                [NC,L]
-RewriteRule  ^agent-property-edit/(.*)$/?$     agent-property-edit.php?id=$1   [NC,L]
-RewriteRule  ^agent-property-delete/(.*)$/?$     agent-property-delete.php?id=$1   [NC,L]
-RewriteRule  ^agent-photo-gallery/(.*)$/?$     agent-photo-gallery.php?id=$1   [NC,L]
-RewriteRule  ^agent-video-gallery/(.*)$/?$     agent-video-gallery.php?id=$1   [NC,L]
+RewriteRule  ^agent-property$                    agent-properties.php                  [NC,L]
+RewriteRule  ^agent-property-edit/(.*)$/?$       agent-property-edit.php?id=$1         [NC,L]
+RewriteRule  ^agent-property-delete/(.*)$/?$     agent-property-delete.php?id=$1       [NC,L]
+RewriteRule  ^agent-photo-gallery/(.*)$/?$       agent-photo-gallery.php?id=$1         [NC,L]
+RewriteRule  ^agent-video-gallery/(.*)$/?$       agent-video-gallery.php?id=$1          [NC,L]
+
+RewriteRule ^single-property/([0-9]+)/([^/]+)$            single-property.php?id=$1&slug=$2                [QSA,L]
 
 
