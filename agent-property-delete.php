@@ -12,7 +12,7 @@
     $statement->execute([$id,$_SESSION['agent']['id']]);
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     $total = $statement->rowCount();
-    if(!$total)
+    if($total = 0)
     {
       header('location: ' . BASE_URL. 'agent-login');
       exit;

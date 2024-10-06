@@ -47,7 +47,7 @@
 
                 if($mime == 'image/jpeg' || $mime == 'image/png' || $mime == 'application/pdf')
                 { 
-                    move_uploaded_file($path_tmp, './uploads/property/'.$filename);
+                    move_uploaded_file($path_tmp, './uploads/property/property-photo/'.$filename);
 
                     $statement = $conn->prepare("INSERT INTO property_photo (property_id, photo) VALUES(?, ?)");
                     $statement->execute([$_GET['id'], $filename]);
@@ -81,7 +81,7 @@
         $statement->execute([$_POST['gallery_id']]);
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
-                unlink('uploads/property/'.$row['photo']);
+                unlink('uploads/property/property-photo/'.$row['photo']);
         }
 
         $statement = $conn->prepare("DELETE FROM property_photo WHERE id=?");
@@ -145,8 +145,8 @@
                               ?>
                                 <div class="col-md-6 col-lg-3">
                                     <div class="item item-delete">
-                                    <a href="<?php echo BASE_URL;  ?>uploads/property/<?php echo $row['photo']; ?>" class="magnific">
-                                        <img src="<?php echo BASE_URL;  ?>uploads/property/<?php echo $row['photo']; ?>" alt="" />
+                                    <a href="<?php echo BASE_URL;  ?>uploads/property/property-photo/<?php echo $row['photo']; ?>" class="magnific">
+                                        <img src="<?php echo BASE_URL;  ?>uploads/property/property-photo/<?php echo $row['photo']; ?>" alt="" />
                                         <div class="icon">
                                             <i class="fas fa-plus"></i>
                                         </div>

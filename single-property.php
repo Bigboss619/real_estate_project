@@ -7,7 +7,7 @@ if (!isset($_GET['id']) || !isset($_GET['slug'])) {
 
 $id = $_GET['id'];
 $slug = $_GET['slug'];
-$statement = $conn->prepare("SELECT p.*, l.name as location_name, t.name as type_name, a.fullname, a.email, a.photo as agent_photo, a.company, a.designation, a.phone,
+$statement = $conn->prepare("SELECT p.*, l.name as location_name, t.id as type_id, t.name as type_name, a.fullname, a.email, a.photo as agent_photo, a.company, a.designation, a.phone,
 a.website, a.facebook, a.twitter, a.linkedln, a.youtube, a.instagram, a.pinterest
 FROM property p
 JOIN locations l
@@ -50,6 +50,13 @@ Description
 <p><?php echo $result[0]['description']; ?></p>
 
 </div>
+<?php
+$statement3 = $conn->prepare("SELECT * FROM property_photo WHERE property_id=?");
+$statement3->execute([$_GET['id']]);
+$result3 = $statement3->fetchAll(PDO::FETCH_ASSOC);
+$total_photo = $statement3->rowCount();
+?>
+<?php if($total_photo > 0): ?>
 <div class="left-item">
 <h2>
 Photos
@@ -57,15 +64,12 @@ Photos
 <div class="photo-all">
 <div class="row">
 <?php
-    $statement3 = $conn->prepare("SELECT * FROM property_photo WHERE property_id=?");
-    $statement3->execute([$_GET['id']]);
-    $result3 = $statement->fetchAll(PDO::FETCH_ASSOC);
-    foreach ($result3 as $row3) {
+    foreach ($result3 as $row) {
         ?>
             <div class="col-md-6 col-lg-4">
                 <div class="item">
-                    <a href="uploads/photo1.jpg" class="magnific">
-                        <img src="uploads/photo1.jpg" alt="" />
+                    <a href="<?php echo BASE_URL; ?>uploads/property/property-photo/<?php echo $row['photo']; ?>" class="magnific">
+                        <img src="<?php echo BASE_URL; ?>uploads/property/property-photo/<?php echo $row['photo']; ?>" alt="" />
                         <div class="icon">
                             <i class="fas fa-plus"></i>
                         </div>
@@ -76,64 +80,63 @@ Photos
         <?php
     }
 ?>
+</div>
+</div>
+</div>
+<?php endif; ?>
 
-
-</div>
-</div>
-</div>
+<?php
+ $statement2 = $conn->prepare("SELECT * FROM property_video WHERE property_id=?");
+ $statement2->execute([$_GET['id']]);
+ $result2 = $statement2->fetchAll(PDO::FETCH_ASSOC);
+ $total_video = $statement2->rowCount();
+?>
+<?php if($total_video > 0): ?>
 <div class="left-item">
 <h2>
 Videos
 </h2>
 <div class="video-all">
 <div class="row">
-<div class="col-md-6 col-lg-4">
-    <div class="item">
-        <a class="video-button" href="http://www.youtube.com/watch?v=j_Y2Gwaj7Gs">
-            <img src="http://img.youtube.com/vi/j_Y2Gwaj7Gs/0.jpg" alt="" />
-            <div class="icon">
-                <i class="far fa-play-circle"></i>
-            </div>
-            <div class="bg"></div>
-        </a>
-    </div>
-</div>
-<div class="col-md-6 col-lg-4">
-    <div class="item">
-        <a class="video-button" href="http://www.youtube.com/watch?v=BvngUP0sHhQ">
-            <img src="http://img.youtube.com/vi/BvngUP0sHhQ/0.jpg" alt="" />
-            <div class="icon">
-                <i class="far fa-play-circle"></i>
-            </div>
-            <div class="bg"></div>
-        </a>
-    </div>
-</div>
-<div class="col-md-6 col-lg-4">
-    <div class="item">
-        <a class="video-button" href="http://www.youtube.com/watch?v=deLf6eynC40">
-            <img src="http://img.youtube.com/vi/deLf6eynC40/0.jpg" alt="" />
-            <div class="icon">
-                <i class="far fa-play-circle"></i>
-            </div>
-            <div class="bg"></div>
-        </a>
-    </div>
-</div>
-</div>
-</div>
-</div>
+    <?php
+        foreach ($result2 as $row2) {
+            ?>
+                <div class="col-md-6 col-lg-4">
+                    <div class="item">
+                        <a class="video-button" href="http://www.youtube.com/watch?v=<?php echo $row2['video_id']; ?>">
+                            <img src="http://img.youtube.com/vi/<?php echo $row2['video_id']; ?>" alt="" />
+                            <div class="icon">
+                                <i class="far fa-play-circle"></i>
+                            </div>
+                            <div class="bg"></div>
+                        </a>
+                    </div>
+                </div>
+            <?php
+        }
+    ?>
 
+
+</div>
+</div>
+</div>
+<?php endif; ?>
 <div class="left-item mb_50">
 <h2>Share</h2>
 <div class="share">
-<a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=[INSERT_URL]&picture=[INSERT_PHOTO]" target="_blank">
+    <?php
+        $share_url = BASE_URL.'single-property/'.$_GET['id'].'/'.$_GET['slug'];
+        $share_photo = BASE_URL . 'uploads/property/'.$result[0]['feature_photo'];
+        $share_title = $result[0]['name'];
+        $share_text = $result[0]['description'];
+     ?>
+<a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $share_url; ?>&picture=<?php echo $share_photo; ?>" target="_blank">
 Facebook
 </a>
-<a class="twitter" href="https://twitter.com/share?url=[INSERT_URL]&text=[INSERT_TEXT]" target="_blank">
+<a class="twitter" href="https://twitter.com/share?url=<?php echo $share_url; ?>&text=<?php echo $share_text; ?>" target="_blank">
 Twitter
 </a>
-<a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=[INSERT_URL]&title=[INSERT_TITLE]&summary=[INSERT_SUMMARY]" target="_blank">
+<a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo $share_url; ?>&title=<?php echo $share_title; ?>&summary=<?php echo $share_text; ?>" target="_blank">
 LinkedIn
 </a>
 </div>
@@ -146,90 +149,81 @@ Related Properties
 </h2>
 <div class="property related-property pt_0 pb_0">
 <div class="row">
-<div class="col-lg-6 col-md-6 col-sm-12">
+    <?php
+        $statement1 = $conn->prepare("SELECT p.*,
+        l.name as location_name,  t.name as type_name, a.fullname, a.photo as agent_photo
+        FROM property p
+        JOIN locations l
+        ON p.location_id = l.id
+        JOIN types t
+        ON p.type_id = t.id
+        JOIN agents a
+        ON p.agent_id = a.id
+        WHERE p.type_id=?
+        LIMIT 4");
+        $statement1->execute([$result[0]['type_id']]);
+        $result5 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+        $total = $statement1->rowCount();
+        foreach ($result5 as $row) {
+            // Skips the current post and show the other related ones
+            if($_GET['id'] == $row['id'])
+            {
+                continue;
+            }
+                ?>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
     <div class="item">
         <div class="photo">
-            <img class="main" src="uploads/property1.jpg" alt="">
+            <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
             <div class="top">
-                <div class="status-sale">
-                    For Sale
+                <div class="status-<?php if ($row['purpose'] == 'Rent') {echo 'rent';} else {echo 'sale';} ?> ">
+                    For <?php echo $row['purpose']; ?>
                 </div>
-                <div class="featured">
-                    Featured
-                </div>
+                <?php if($row['is_featured'] == 'Yes'): ?>
+                    <div class="featured">
+                        Featured
+                    </div>
+                <?php endif; ?>    
             </div>
-            <div class="price">$56,000</div>
+            <div class="price">$<?php echo $row['price']; ?></div>
             <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
         </div>
         <div class="text">
-            <h3><a href="property.html">Sea Side Property</a></h3>
+            <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
             <div class="detail">
                 <div class="stat">
-                    <div class="i1">2500 sqft</div>
-                    <div class="i2">2 Bed</div>
-                    <div class="i3">2 Bath</div>
+                        <div class="i1"><?php echo $row['size']; ?>sqft</div>
+                        <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
+                        <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
                 </div>
                 <div class="address">
-                    <i class="fas fa-map-marker-alt"></i> 937 Jamajo Blvd, Orlando FL 32803
+                    <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
                 </div>
                 <div class="type-location">
                     <div class="i1">
-                        <i class="fas fa-edit"></i> Villa
+                        <i class="fas fa-edit"></i> <?php echo $row['type_name']; ?>
                     </div>
                     <div class="i2">
-                        <i class="fas fa-location-arrow"></i> Orland
+                        <i class="fas fa-location-arrow"></i> <?php echo $row['location_name']; ?>
                     </div>
                 </div>
                 <div class="agent-section">
-                    <img class="agent-photo" src="uploads/agent1.jpg" alt="">
-                    <a href="">Robert Johnson (AA Property)</a>
+                    <?php if (empty($row['photo'])): ?>
+                        <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
+                    <?php else: ?>
+                        <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
+                    <?php endif; ?>
+                        <a href=""><?php echo $row['fullname']; ?></a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="col-lg-6 col-md-6 col-sm-12">
-    <div class="item">
-        <div class="photo">
-            <img class="main" src="uploads/property2.jpg" alt="">
-            <div class="top">
-                <div class="status-rent">
-                    For Rent
-                </div>
-                <div class="featured">
-                    Featured
-                </div>
-            </div>
-            <div class="price">$4,900</div>
-            <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
-        </div>
-        <div class="text">
-            <h3><a href="property.html">Modern Villa</a></h3>
-            <div class="detail">
-                <div class="stat">
-                    <div class="i1">2500 sqft</div>
-                    <div class="i2">2 Bed</div>
-                    <div class="i3">2 Bath</div>
-                </div>
-                <div class="address">
-                    <i class="fas fa-map-marker-alt"></i> 2006 E Central Blvd, Orlando FL 32803
-                </div>
-                <div class="type-location">
-                    <div class="i1">
-                        <i class="fas fa-edit"></i> Condo
-                    </div>
-                    <div class="i2">
-                        <i class="fas fa-location-arrow"></i> Orland
-                    </div>
-                </div>
-                <div class="agent-section">
-                    <img class="agent-photo" src="uploads/agent2.jpg" alt="">
-                    <a href="">Eric Williams (BB Property)</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <?php
+        }
+    ?>
+
+
 </div>
 </div>
 </div>
@@ -251,7 +245,13 @@ Related Properties
 <table class="table table-bordered">
 <tr>
     <td>Posted On: </td>
-    <td><?php echo $result[0]['posted_on']; ?></td>
+    <td>
+        <?php 
+            $ts = strtotime($result[0]['posted_on']);
+            // August 9, 2023, 3:30 pm
+            echo date("F j, Y", $ts);
+         ?>
+    </td>
 </tr>
 <tr>
     <td>Email: </td>
@@ -387,27 +387,29 @@ Related Properties
 </div>
 
 <div class="right-item">
-<h2>Location Map</h2>
+<!-- <h2>Location Map</h2>
 <div class="location-map">
-<?php echo $result[0]['map']; ?>
-</div>
+
+</div> -->
 </div>
 
 <div class="right-item">
 <h2>Enquery Form</h2>
 <div class="enquery-form">
-<form action="" method="post">
+<form action="<?php echo BASE_URL; ?>ajax-enquery.php" method="POST" class="form_enquery">
+    <!-- Getting the agent email -->
+    <input type="hidden" name="agent_email" value="<?php echo $result[0]['email'];?>">
 <div class="mb-3">
-    <input type="text" class="form-control" placeholder="Full Name" />
+    <input type="text" name="full_name" class="form-control" placeholder="Full Name" />
 </div>
 <div class="mb-3">
-    <input type="email" class="form-control" placeholder="Email Address" />
+    <input type="email" name="email" class="form-control" placeholder="Email Address" />
 </div>
 <div class="mb-3">
-    <input type="text" class="form-control" placeholder="Phone Number" />
+    <input type="text" name="phone" class="form-control" placeholder="Phone Number" />
 </div>
 <div class="mb-3">
-    <textarea class="form-control h-150" rows="3" placeholder="Message"></textarea>
+    <textarea class="form-control h-150" name="comment" rows="3" placeholder="Message"></textarea>
 </div>
 <div class="mb-3">
     <button type="submit" class="btn btn-primary">
@@ -423,4 +425,56 @@ Related Properties
         </div>
     </div>
 </div>
+<script>
+    (function($){
+        "use strict";
+        $(document).ready(function(){
+            $('.form_enquery').on('submit', function(e){
+                e.preventDefault();
+                let formData = new FormData(this);
+                let form = this;
+
+                $.ajax({
+                    url: this.action,
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        try {
+                            // Attempt to parse the response as JSON
+                            let data = JSON.parse(response);
+
+                            if (data.error_message) {
+                                // alert(data.error_message);
+                                iziToast.show({
+                                message: data.error_message,
+                                position: 'topRight',
+                                color: 'red'
+                                });
+                            } else {
+                                form.reset();
+                                iziToast.show({
+                                message: data.success_message,
+                                position: 'topRight',
+                                color: 'green'
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Error parsing JSON response:', error);
+                            alert("An unexpected error occurred. Please try again.");
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle the case when the AJAX request fails
+                        console.error('AJAX error:', textStatus, errorThrown);
+                        alert('There was a problem with the request. Please try again later.');
+                    }
+                });
+            });
+        });
+    })(jQuery);
+</script>
+
 <?php require_once('footer.php'); ?>

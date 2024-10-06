@@ -154,7 +154,7 @@ if(!$total)
                             }
                      }
                 } 
-                $descrption = strip_tags(stripInlineStyles($_POST['descrption']));
+                $description = strip_tags(stripInlineStyles($_POST['description']));
                 
                 $path = $_FILES['featured_photo']['name'];
                 $path_tmp = $_FILES['featured_photo']['tmp_name'];
@@ -193,8 +193,9 @@ if(!$total)
                         built_year, 
                         map,
                         is_featured,
-                        status
-                        ) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        status,
+                        posted_on
+                        ) VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                         $statement->execute([
                             $_SESSION['agents']['id'], 
                             $_POST['location_id'],
@@ -202,7 +203,7 @@ if(!$total)
                             $amenities,
                             $_POST['name'],
                             $_POST['slug'],
-                            $descrption,
+                            $description,
                             $filename,
                             $_POST['price'],
                             $_POST['purpose'],
@@ -216,7 +217,8 @@ if(!$total)
                             $_POST['built_year'],
                             $_POST['map'],
                             $_POST['is_featured'],
-                            'Active'
+                            'Active',
+                            date('Y-m-d')
                         ]);
                         $success_message = 'Property is added successfully';
                         $_SESSION['success_message'] = $success_message;

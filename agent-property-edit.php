@@ -24,7 +24,7 @@ if (!isset($_SESSION['agents'])) {
 <?php
     if(isset($_POST['update']))
     {
-            echo 'Form submitted';
+            
         // Function to strip inline styles
         function stripInlineStyles($html) {
             // Remove style attributes from tags
