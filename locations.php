@@ -1,11 +1,19 @@
 <?php require_once('header.php'); ?>
-
+<?php
+$statement = $conn->prepare("SELECT * FROM locations WHERE slag=?");
+$statement->execute([$_GET['slag']]);
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+foreach ($result as $row) {
+    $id = $row['id'];
+    $l_name = $row['name'];
+    }
+?>
 <div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg)">
     <div class="bg"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>Location: Boston</h2>
+                <h2>Properties of <?php echo $l_name; ?></h2>
             </div>
         </div>
     </div>
@@ -14,12 +22,7 @@
     <div class="container">
         <div class="row">
             <?php
-                $statement = $conn->prepare("SELECT * FROM locations WHERE slag=?");
-                $statement->execute([$_GET['slug']]);
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($result as $row) {
-                $id = $row['id'];
-                }
+      
                      $statement = $conn->prepare("SELECT p.*,
                      l.name as location_name,
                      t.name as type_name,

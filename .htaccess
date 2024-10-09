@@ -26,6 +26,9 @@ RewriteRule  ^agent-photo-gallery/(.*)$/?$       agent-photo-gallery.php?id=$1  
 RewriteRule  ^agent-video-gallery/(.*)$/?$       agent-video-gallery.php?id=$1          [NC,L]
 
 RewriteRule  ^locations/(.*)$/?$                    locations.php?slag=$1          [NC,L]
+RewriteRule  ^location/(.*)$/?$                    location.php?p=$1          [NC,L]
+
+RewriteRule  ^agents/(.*)$/?$                     agents.php?p=$1                       [NC,L]
 
 RewriteRule ^single-property/([0-9]+)/([^/]+)$            single-property.php?id=$1&slug=$2                [QSA,L]
 

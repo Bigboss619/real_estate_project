@@ -272,135 +272,104 @@
 <div class="container">
 <div class="row">
 <!-- Basic Pagination  -->
+<!-- Basic Pagination -->
 <?php
-    $query = '';
-    $query = $c_location_id.$c_type_id.$c_amenity_id.$c_purpose.$c_bathroom.$c_bedroom.$c_price.$c_name;
-    $per_page = 4;
-    $q = $conn->prepare("SELECT p.*,
-        l.name as location_name,
-        t.name as type_name,
-        a.fullname, a.company, a.photo
-        FROM property p
-        JOIN locations l
-        ON p.location_id = l.id
-        JOIN types t 
-        ON p.type_id = t.id
-        JOIN agents a
-        ON p.agent_id = a.id
-         WHERE 1=1 ".$query." ORDER BY p.is_featured DESC");
-    $q->execute();
-    $total = $q->rowCount();
-    $total_pages = ceil($total/$per_page);
+$query = ''; // Your existing query logic here
+$query = $c_location_id . $c_type_id . $c_amenity_id . $c_purpose . $c_bathroom . $c_bedroom . $c_price . $c_name;
 
-    if(!isset($_REQUEST['p'])) {
-    $start = 1;
-    } else {
-    $start = $per_page * ($_REQUEST['p']-1) + 1;
-    }
-    $j=0;
-    $k=0;
-    $arr1 = [];
-    $res = $q->fetchAll();
-    foreach($res as $row) {
-    $j++;
-    if($j>=$start) {
-    $k++;
-    if($k>$per_page) {break;}
-    $arr1[] = $row['id'];
-    }
-    }
-    ?>
-    <?php
-    $total_row = $statement->rowCount();
-    foreach ($res as $row) {
-    if(!in_array($row['id'],$arr1)) {
-    continue;
-    }
-        ?>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div class="item">
-                    <div class="photo">
-                        <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
-                        <div class="top">
-                        <div class="status-<?php if ($row['purpose'] == 'Rent') {echo 'rent';} else {echo 'sale';} ?> ">
-                                For <?php echo $row['purpose']; ?>
-                            </div>
-                            <?php if($row['is_featured'] == 'Yes'): ?>
-                            <div class="featured">
-                               Featured
-                            </div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="price"><?php echo $row['price']; ?></div>
-                        <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
+$per_page = 4; // Number of items per page
+$q = $conn->prepare("SELECT p.*,
+    l.name as location_name,
+    t.name as type_name,
+    a.fullname, a.company, a.photo
+    FROM property p
+    JOIN locations l ON p.location_id = l.id
+    JOIN types t ON p.type_id = t.id
+    JOIN agents a ON p.agent_id = a.id
+    WHERE 1=1 " . $query . " ORDER BY p.is_featured DESC");
+$q->execute();
+
+$total = $q->rowCount(); // Total records
+$total_pages = ceil($total / $per_page); // Total pages
+$page = isset($_GET['p']) ? (int)$_GET['p'] : 1; // Current page
+$start = ($page - 1) * $per_page; // Start index for pagination
+
+// Fetch all records
+$res = $q->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<?php foreach ($res as $key => $row): ?>
+    <?php if ($key < $start || $key >= $start + $per_page) continue; // Pagination logic ?>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="item">
+            <div class="photo">
+                <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
+                <div class="top">
+                    <div class="status-<?php echo ($row['purpose'] == 'Rent') ? 'rent' : 'sale'; ?>">
+                        For <?php echo $row['purpose']; ?>
                     </div>
-                    <div class="text">
-                        <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
-                        <div class="detail">
-                            <div class="stat">
-                                <div class="i1"><?php echo $row['size']; ?></div>
-                                <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
-                                <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
-                            </div>
-                            <div class="address">
-                                <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
-                            </div>
-                            <div class="type-location">
-                                <div class="i1">
-                                    <i class="fas fa-edit"></i> <?php echo $row['location_name']; ?>
-                                </div>
-                                <div class="i2">
-                                    <i class="fas fa-location-arrow"></i> <?php echo $row['type_name']; ?>
-                                </div>
-                            </div>
-                            <div class="agent-section">
-                                         <?php if (empty($row['photo'])): ?>
-                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
-                                        <?php else: ?>
-                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
-                                        <?php endif; ?>
-                                <a href=""><?php echo $row['fullname']; ?></a>
-                            </div>
+                    <?php if ($row['is_featured'] == 'Yes'): ?>
+                        <div class="featured">Featured</div>
+                    <?php endif; ?>
+                </div>
+                <div class="price"><?php echo $row['price']; ?></div>
+                <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
+            </div>
+            <div class="text">
+                <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
+                <div class="detail">
+                    <div class="stat">
+                        <div class="i1"><?php echo $row['size']; ?></div>
+                        <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
+                        <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
+                    </div>
+                    <div class="address">
+                        <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
+                    </div>
+                    <div class="type-location">
+                        <div class="i1">
+                            <i class="fas fa-edit"></i> <?php echo $row['location_name']; ?>
                         </div>
+                        <div class="i2">
+                            <i class="fas fa-location-arrow"></i> <?php echo $row['type_name']; ?>
+                        </div>
+                    </div>
+                    <div class="agent-section">
+                        <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo empty($row['photo']) ? 'default.png' : $row['photo']; ?>" alt="">
+                        <a href=""><?php echo $row['fullname']; ?></a>
                     </div>
                 </div>
             </div>
-        <?php
-    }
-
-    if($total_row):
-    
-    $common_url_part = BASE_URL.'properties.php?name='.$_GET['name'].'&location_id='.$_GET['location_id'].'&type_id='.$_GET['type_id'].'&amenity_id='.$_GET['amenity_id'].'&purpose='.$_GET['purpose'].'&bedroom='.$_GET['bedroom'].'&bathroom='.$_GET['bathroom'].'&price='.$_GET['price'];
-
-    ?>
-        <div class="col-md-12">  
-    <?php
-    if(isset($_REQUEST['p'])) {
-    if($_REQUEST['p'] == 1) {
-    echo '<a class="links-pagination links_gray" href="javascript:void;"> << </a>';
-    } else {
-    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p='.($_REQUEST['p']-1).'"> << </a>';
-    }
-    } else {
-    echo '<a class="links-pagination links_gray" href="javascript:void;"> << </a>';
-    }
-    for($i=1;$i<=$total_pages;$i++) {
-    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p='.$i.'">'.$i.'</a>';
-    }
-    if(isset($_REQUEST['p'])) {
-    if($_REQUEST['p'] == $total_pages) {
-    echo '<a class="links-pagination links_gray" href="javascript:void;"> >> </a>';
-    } else {
-    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p='.($_REQUEST['p']+1).'"> >> </a>';
-    }
-    } else {
-    echo '<a class="links-pagination links_gray" href="'.$common_url_part.'&p=2"> >> </a>';
-    }
-    ?>
         </div>
+    </div>
+<?php endforeach; ?>
+
+<div class="pagination"> <!-- Start pagination section -->
     <?php
-endif;
-?>
+    $common_url_part = BASE_URL.'properties.php?name='.$_GET['name'].'&location_id='.$_GET['location_id'].'&type_id='.$_GET['type_id'].'&amenity_id='.$_GET['amenity_id'].'&purpose='.$_GET['purpose'].'&bedroom='.$_GET['bedroom'].'&bathroom='.$_GET['bathroom'].'&price='.$_GET['price'];
+     if ($total > $per_page): ?>
+        
+        <!-- Previous button -->
+        <?php if ($page > 1): ?>
+            <a class="links-pagina" href="<?php echo $common_url_part . '&p=' . ($page - 1); ?>"> << </a>
+        <?php else: ?>
+            <a class="links-pagina disabled" href="javascript:void(0);" style="background:#ddd;"> << </a>
+        <?php endif; ?>
+
+        <!-- Page numbers -->
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a class="links-pagina <?php echo ($i == $page) ? 'active' : ''; ?>" href="<?php echo $common_url_part . '&p=' . $i; ?>"><?php echo $i; ?></a>
+        <?php endfor; ?>
+
+        <!-- Next button -->
+        <?php if ($page < $total_pages): ?>
+            <a class="links-pagina" href="<?php echo $common_url_part . '&p=' . ($page + 1); ?>"> >> </a>
+        <?php else: ?>
+            <a class="links-pagina disabled" href="javascript:void(0);" style="background:#ddd;"> >> </a>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+
 </div>
 </div>
 </div>
