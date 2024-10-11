@@ -1,0 +1,72 @@
+<?php
+require_once('header.php');
+?>
+<?php
+    if(!isset($_SESSION['customer']))
+    {
+        header('location: '.BASE_URL.'customer-login');
+        exit;
+    }
+?>
+  <div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg)">
+        <div class="bg"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Messages</h2>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="page-content user-panel">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-12">
+                    <?php require_once('customer-sidebar.php'); ?>
+                </div>
+                <div class="col-lg-9 col-md-12">
+                    <a href="<?php echo BASE_URL; ?>customer-message-create.php" class="btn btn-primary btn-sm mb_20">New Message</a>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>SL</th>
+                                    <th>Subject</th>
+                                    <th>Agent</th>
+                                    <th>Posted On</th>
+                                    <th class="w-100">Action</th>
+                                </tr>
+                                <?php
+                                    $i=0;
+                                    $statement = $conn->prepare("SELECT * FROM messages n
+                                    JOIN agents a
+                                    ON n.agent_id = a.id
+                                    WHERE n.customer_id=?
+                                    ");
+                                    $statement->execute([$_SESSION['customer']['id']]);
+                                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result as $row) {
+                                        $i++;
+                                        ?>
+                                                <tr>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo $row['subject']; ?></td>
+                                    <td><?php echo $row['fullname']; ?></td>
+                                    <td><?php echo $row['posted_on']; ?></td>
+                                    <td>
+                                        <a href="" class="btn btn-primary btn-sm text-white"><i class="fas fa-eye"></i></a>
+                                        <a href="" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                                        <?php
+                                    }
+                                 ?>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php require_once('footer.php'); ?>

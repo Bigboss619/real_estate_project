@@ -286,8 +286,14 @@ $q = $conn->prepare("SELECT p.*,
     JOIN locations l ON p.location_id = l.id
     JOIN types t ON p.type_id = t.id
     JOIN agents a ON p.agent_id = a.id
-    WHERE 1=1 " . $query . " ORDER BY p.is_featured DESC");
-$q->execute();
+    WHERE 1=1 " . $query . " AND p.agent_id NOT IN(
+-- Removes agent post when there packages expires
+    SELECT a.id FROM agents a
+    JOIN orders o
+    ON a.id = o.agent_id
+    WHERE o.expire_date < ? AND o.currently_active = ?
+    )ORDER BY p.is_featured DESC");
+$q->execute([date('Y-m-d'),1]);
 
 $total = $q->rowCount(); // Total records
 $total_pages = ceil($total / $per_page); // Total pages
@@ -313,7 +319,7 @@ $res = $q->fetchAll(PDO::FETCH_ASSOC);
                     <?php endif; ?>
                 </div>
                 <div class="price"><?php echo $row['price']; ?></div>
-                <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
+                <div class="wishlist"><a href="<?php echo BASE_URL; ?>customer-wishlist-add.php?id=<?php echo $row['id']; ?>"><i class="far fa-heart"></i></a></div>
             </div>
             <div class="text">
                 <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>

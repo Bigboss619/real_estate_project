@@ -25,7 +25,7 @@ foreach ($result as $row) {
       
                      $statement = $conn->prepare("SELECT p.*,
                      l.name as location_name,
-                     t.name as type_name,
+                     t.name as type_name, a.id as agent_id,
                      a.fullname, a.company, a.photo as agent_photo
                      FROM property p
                       JOIN locations l 
@@ -34,8 +34,14 @@ foreach ($result as $row) {
                       ON p.type_id = t.id
                       JOIN agents a
                       ON p.agent_id = a.id
-                     WHERE p.location_id=?");
-                $statement->execute([$id]);
+                     WHERE p.location_id=? AND p.agent_id NOT IN(
+                    -- Removes agent post when there packages expires
+                        SELECT a.id FROM agents a
+                        JOIN orders o
+                        ON a.id = o.agent_id
+                        WHERE o.expire_date < ? AND o.currently_active = ?
+                        )");
+                $statement->execute([$id, date('Y-m-d'),1]);
                 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                 $total = $statement->rowCount();
                 if (!$total) {
@@ -62,7 +68,7 @@ foreach ($result as $row) {
                              <?php endif; ?>   
                         </div>
                         <div class="price">$<?php echo $row['price']; ?></div>
-                        <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
+                        <div class="wishlist"><a href="<?php echo BASE_URL; ?>customer-wishlist-add.php?id=<?php echo $row['id']; ?>"><i class="far fa-heart"></i></a></div>
                     </div>
                     <div class="text">
                         <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
@@ -89,7 +95,7 @@ foreach ($result as $row) {
                                         <?php else: ?>
                                             <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['agent_photo']; ?>" alt="">
                                         <?php endif; ?>
-                                <a href=""><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>))</a>
+                                <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['agent_id']; ?>"><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>))</a>
                             </div>
                         </div>
                     </div>

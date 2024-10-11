@@ -5,6 +5,9 @@ RewriteRule  ^customer-registration$                customer-registration.php   
 RewriteRule  ^customer-login$                       customer-login.php                       [NC,L]
 RewriteRule  ^customer-forget-password$             customer-forget-password.php             [NC,L]
 RewriteRule  ^customer-dashboard$                   customer-dashboard.php                   [NC,L]
+RewriteRule  ^customer-wishlist$                   customer-wishlist.php                   [NC,L]
+RewriteRule  ^customer-messages$                   customer-messages.php                   [NC,L]
+RewriteRule  ^customer-message-create$             customer-message-create.php                   [NC,L]
 RewriteRule  ^customer-logout$                      customer-logout.php                      [NC,L]
 RewriteRule  ^customer-edit-profile$                customer-edit-profile.php                [NC,L]
 RewriteRule  ^pricing$                              pricing.php                              [NC,L]
@@ -29,6 +32,7 @@ RewriteRule  ^locations/(.*)$/?$                    locations.php?slag=$1       
 RewriteRule  ^location/(.*)$/?$                    location.php?p=$1          [NC,L]
 
 RewriteRule  ^agents/(.*)$/?$                     agents.php?p=$1                       [NC,L]
+RewriteRule  ^agent/(.*)$/?$                     agent.php?id=$1                       [NC,L]
 
 RewriteRule ^single-property/([0-9]+)/([^/]+)$            single-property.php?id=$1&slug=$2                [QSA,L]
 

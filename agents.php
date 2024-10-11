@@ -1,5 +1,15 @@
 <?php require_once('header.php'); ?>
-
+<?php
+// This code is to allow only active agent with active order to show on the page with his uploads
+$allowed_agents = [];
+$q = $conn->prepare("SELECT agent_id FROM orders WHERE expire_date >= CURDATE() AND currently_active=?");
+$q->execute([1]);
+$result = $q->fetchAll();
+foreach($result  as $row){
+    $allowed_agents[] = $row['agent_id'];
+}
+$agents_list = implode(',',$allowed_agents);
+?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
         <div class="bg"></div>
         <div class="container">
@@ -16,7 +26,7 @@
             <div class="row">
                 <?php
                         $per_page = 4;
-                        $q = $conn->prepare("SELECT * FROM agents WHERE status=?");
+                        $q = $conn->prepare("SELECT * FROM agents WHERE status=? AND id IN ($agents_list)");
                         $q->execute([1]);
                         $total = $q->rowCount();
                         $total_pages = ceil($total / $per_page);
@@ -47,11 +57,11 @@
                                 <div class="col-lg-3 col-md-4 col-sm-6">
                                     <div class="item">
                                         <div class="photo">
-                                        <a href=""><img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt=""></a>
+                                        <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['id']; ?>"><img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt=""></a>
                                         </div>
                                         <div class="text">
                                             <h2>
-                                            <a href="agent.html"><?php echo $row['fullname']; ?></a>
+                                            <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['id']; ?>"><?php echo $row['fullname']; ?></a>
                                             </h2>
                                         </div>
                                     </div>
@@ -82,7 +92,7 @@
                         }
                         ?>
                         </div> <!-- End pagination section -->
-                ?>
+
                
             </div>
         </div>

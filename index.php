@@ -1,4 +1,17 @@
 <?php require_once('header.php'); ?>
+
+<?php
+// This code is to allow only active agent with active order to show on the page with his uploads
+$allowed_agents = [];
+$q = $conn->prepare("SELECT agent_id FROM orders WHERE expire_date >= CURDATE() AND currently_active=?");
+$q->execute([1]);
+$result = $q->fetchAll();
+foreach($result  as $row){
+    $allowed_agents[] = $row['agent_id'];
+}
+$agents_list = implode(',',$allowed_agents);
+?>
+
 <div class="slider" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner-home.jpg)">
     <div class="bg"></div>
     <div class="container">
@@ -101,8 +114,14 @@
                   ON p.type_id = t.id
                   JOIN agents a
                   ON p.agent_id = a.id
-                 WHERE p.is_featured=? LIMIT 6");
-            $statement->execute(['Yes']);
+                 WHERE p.is_featured=? AND p.agent_id NOT IN(
+                -- Removes agent post when there packages expires
+                    SELECT a.id FROM agents a
+                    JOIN orders o
+                    ON a.id = o.agent_id
+                    WHERE o.expire_date < ? AND o.currently_active = ?
+                 ) LIMIT 6");
+            $statement->execute(['Yes', date('Y-m-d'), '1']);
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             $total = $statement->rowCount();
             if (!$total) {
@@ -133,7 +152,7 @@
                              <?php endif; ?>
                                 </div>
                                 <div class="price">$<?php echo $row['price']; ?></div>
-                                <div class="wishlist"><a href=""><i class="far fa-heart"></i></a></div>
+                                <div class="wishlist"><a href="<?php echo BASE_URL; ?>customer-wishlist-add.php?id=<?php echo $row['id']; ?>"><i class="far fa-heart"></i></a></div>
                             </div>
                             <div class="text">
                                 <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
@@ -248,7 +267,8 @@
         </div>
         <div class="row">
             <?php
-                $statement10 = $conn->prepare("SELECT * FROM agents status=? LIMIT 8");
+                $statement10 = $conn->prepare("SELECT * FROM agents
+                 WHERE status=? AND id IN ($agents_list) LIMIT 8");
                 $statement10->execute([1]);
                 $result10 = $statement10->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($result10 as $row10) {
@@ -256,11 +276,11 @@
                             <div class="col-lg-3 col-md-3">
                                 <div class="item">
                                     <div class="photo">
-                                        <a href=""><img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row10['photo']; ?>" alt=""></a>
+                                        <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['id']; ?>"><img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row10['photo']; ?>" alt=""></a>
                                     </div>
                                     <div class="text">
                                         <h2>
-                                            <a href="agent.html"><?php echo $row10['fullname']; ?></a>
+                                            <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['id']; ?>"><?php echo $row10['fullname']; ?></a>
                                         </h2>
                                     </div>
                                 </div>
@@ -289,25 +309,26 @@
         </div>
         <div class="row">
             <?php
-            $statement = $conn->prepare("SELECT l.id, l.name, l.slag, l.photo, COUNT(p.id) AS property_count 
-            FROM locations l
-            LEFT JOIN property p
-            ON l.id = p.location_id
-            GROUP BY l.id
-            HAVING property_count >= 0
-            ORDER BY property_count DESC LIMIT 8");
-            $statement->execute();
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+              $per_page = 4;
+              $statement = $conn->prepare("SELECT l.id, l.name as location_name, l.slag as location_slag, l.photo as location_photo, COUNT(*) as location_count
+               FROM property p 
+               JOIN locations l
+               ON p.location_id = l.id
+               WHERE p.agent_id IN ($agents_list)
+               GROUP BY l.id, l.name, l.photo, l.slag
+               ORDER BY location_count DESC");
+                $statement->execute();
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
             ?>
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="item">
                         <div class="photo">
-                            <a href="<?php echo BASE_URL;  ?>locations/<?php echo $row['slag']; ?>"><img src="<?php BASE_URL; ?>uploads/location/<?php echo $row['photo']; ?>" alt=""></a>
+                            <a href="<?php echo BASE_URL;  ?>locations/<?php echo $row['location_slag']; ?>"><img src="<?php BASE_URL; ?>uploads/location/<?php echo $row['location_photo']; ?>" alt=""></a>
                         </div>
                         <div class="text">
-                            <h2><a href="<?php echo BASE_URL;  ?>locations/<?php echo $row['slag']; ?>"><?php echo $row['name']; ?></a></h2>
-                            <h4><?php echo $row['property_count']; ?> Property</h4>
+                            <h2><a href="<?php echo BASE_URL;  ?>locations/<?php echo $row['location_slag']; ?>"><?php echo $row['location_name']; ?></a></h2>
+                            <h4><?php echo $row['location_count']; ?> Property</h4>
                         </div>
                     </div>
                 </div>

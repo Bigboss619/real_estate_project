@@ -1,4 +1,14 @@
 <?php require_once('header.php'); ?>
+<?php
+$allowed_agents = [];
+$q = $conn->prepare("SELECT agent_id FROM orders WHERE expire_date >= CURDATE() AND currently_active=?");
+$q->execute([1]);
+$result = $q->fetchAll();
+foreach($result  as $row){
+    $allowed_agents[] = $row['agent_id'];
+}
+$agents_list = implode(',',$allowed_agents);
+?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
         <div class="bg"></div>
         <div class="container">
@@ -16,13 +26,13 @@
         <?php
         // Pagination setup
         $per_page = 4;
-        $q = $conn->prepare("SELECT l.id, l.name, l.slag, l.photo, COUNT(p.id) AS property_count
-            FROM locations l
-            LEFT JOIN property p
-            ON l.id = p.location_id
-            GROUP BY l.id
-            HAVING property_count >= 0
-            ORDER BY property_count DESC");
+        $q = $conn->prepare("SELECT l.id, l.name as location_name, l.slag as location_slag, l.photo as location_photo, COUNT(*) as location_count
+            FROM property p 
+            JOIN locations l
+            ON p.location_id = l.id
+            WHERE p.agent_id IN ($agents_list)
+            GROUP BY l.id, l.name, l.photo, l.slag
+            ORDER BY location_count DESC");
         $q->execute();
         $total = $q->rowCount();
         $total_pages = ceil($total / $per_page);
@@ -54,15 +64,15 @@
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="item">
                     <div class="photo">
-                        <a href="<?php echo BASE_URL; ?>locations/<?php echo $row['slag']; ?>">
-                            <img src="<?php echo BASE_URL; ?>uploads/location/<?php echo $row['photo']; ?>" alt="">
+                        <a href="<?php echo BASE_URL; ?>locations/<?php echo $row['location_slag']; ?>">
+                            <img src="<?php echo BASE_URL; ?>uploads/location/<?php echo $row['location_photo']; ?>" alt="">
                         </a>
                     </div>
                     <div class="text">
                         <h2>
-                            <a href="<?php echo BASE_URL; ?>locations/<?php echo $row['slag']; ?>"><?php echo $row['name']; ?></a>
+                            <a href="<?php echo BASE_URL; ?>locations/<?php echo $row['location_slag']; ?>"><?php echo $row['location_name']; ?></a>
                         </h2>
-                        <h4><?php echo $row['property_count']; ?> Property</h4>
+                        <h4><?php echo $row['location_count']; ?> Property</h4>
                     </div>
                 </div>
             </div>

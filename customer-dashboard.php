@@ -23,7 +23,7 @@ require_once('header.php');
 <div class="container">
 <div class="row">
     <div class="col-lg-3 col-md-12">
-        <?php require_once('customer-sidebar.php') ?>
+        <?php require_once('customer-sidebar.php'); ?>
     </div>
     <div class="col-lg-9 col-md-12">
         <h3>Hello, <?php echo $_SESSION['customer']['fullname'] ?></h3>
