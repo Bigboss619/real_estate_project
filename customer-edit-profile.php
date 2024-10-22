@@ -14,7 +14,7 @@ if(isset($_POST['form_update']))
             if(!filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("Email is invalid");
             }
-            $statement = $pdo->prepare("SELECT * FROM customer WHERE email=? AND id!=?");
+            $statement = $conn->prepare("SELECT * FROM customer WHERE email=? AND id!=?");
             $statement->execute([$_POST['email'],$_SESSION['customer']['id']]);
             $total = $statement->rowCount();
             if($total > 0) {
@@ -57,12 +57,12 @@ if(isset($_POST['form_update']))
                  {
 
                     // Checking if ther was a various photo and unlink it
-                    if($_SESSION['customer']['photo'] != '' && file_exists('uploads/'.$_SESSION['customer']['photo']))
+                    if($_SESSION['customer']['photo'] != '' && file_exists('uploads/customer-dp/'.$_SESSION['customer']['photo']))
                     {
-                        unlink('uploads/'.$_SESSION['customer']['photo']);
+                        unlink('uploads/customer-dp/'.$_SESSION['customer']['photo']);
                     }
         
-                    move_uploaded_file($path_tmp, 'uploads/'.$filename);
+                    move_uploaded_file($path_tmp, 'uploads/customer-dp/'.$filename);
     
                      // Updating the database
                      $statement = $conn->prepare("UPDATE customer SET photo=? WHERE id=?");
@@ -111,9 +111,9 @@ if(isset($_POST['form_update']))
                     <label for="">Existing Photo</label>
                     <div class="form-group">
                         <?php if($_SESSION['customer']['photo'] == ''): ?>
-                            <img src="<?php echo BASE_URL; ?>uploads/user-photo.jpg" alt="" class="user-photo">
+                            <img src="<?php echo BASE_URL; ?>uploads/customer-dp/user.jpg" alt="" class="user-photo">
                             <?php else: ?>
-                                <img src="<?php echo BASE_URL; ?>uploads/<?php echo htmlspecialchars($_SESSION['customer']['photo']); ?>" alt="" class="user-photo">
+                                <img src="<?php echo BASE_URL; ?>uploads/customer-dp/<?php echo htmlspecialchars($_SESSION['customer']['photo']); ?>" alt="" class="user-photo">
                             <?php endif; ?>
                     </div>
                 </div>

@@ -25,7 +25,7 @@ require_once('header.php');
                     <?php require_once('customer-sidebar.php'); ?>
                 </div>
                 <div class="col-lg-9 col-md-12">
-                    <a href="<?php echo BASE_URL; ?>customer-message-create.php" class="btn btn-primary btn-sm mb_20">New Message</a>
+                    <a href="<?php echo BASE_URL; ?>customer-message-create" class="btn btn-primary btn-sm mb_20">New Message</a>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tbody>
@@ -38,10 +38,11 @@ require_once('header.php');
                                 </tr>
                                 <?php
                                     $i=0;
-                                    $statement = $conn->prepare("SELECT * FROM messages n
+                                    $statement = $conn->prepare("SELECT m.*, m.id as message_id, a.fullname
+                                     FROM messages m
                                     JOIN agents a
-                                    ON n.agent_id = a.id
-                                    WHERE n.customer_id=?
+                                    ON m.agent_id = a.id
+                                    WHERE m.customer_id=?
                                     ");
                                     $statement->execute([$_SESSION['customer']['id']]);
                                     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -54,8 +55,10 @@ require_once('header.php');
                                     <td><?php echo $row['fullname']; ?></td>
                                     <td><?php echo $row['posted_on']; ?></td>
                                     <td>
-                                        <a href="" class="btn btn-primary btn-sm text-white"><i class="fas fa-eye"></i></a>
-                                        <a href="" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="<?php echo BASE_URL; ?>customer-message/<?php echo $row['message_id']; ?>" class="btn btn-primary btn-sm text-white"><i class="fas fa-eye"></i></a>
+
+                                        <a href="<?php echo BASE_URL; ?>customer-message-delete/<?php echo $row['message_id']; ?>" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></a>
+
                                     </td>
                                 </tr>
                                         <?php

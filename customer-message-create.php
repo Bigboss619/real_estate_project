@@ -2,6 +2,11 @@
 require_once('header.php');
 ?>
 <?php
+ use PHPMailer\PHPMailer\PHPMailer;
+ use PHPMailer\PHPMailer\SMTP;
+ use PHPMailer\PHPMailer\Exception;
+ ?>
+<?php
     if(!isset($_SESSION['customer']))
     {
         header('location: '.BASE_URL.'customer-login');
@@ -11,45 +16,53 @@ require_once('header.php');
 <?php
    if(isset($_POST['form_submit'])){
     try {
-    if($_POST['fsubject'] == '') {
-    throw new Exception("Subject can not be empty");
-    }
-    if($_POST['message'] == '') {
-    throw new Exception("Message can not be empty");
-    }
+        if($_POST['subject'] == '') {
+             throw new Exception("Subject can not be empty");
+        }
+        if($_POST['message'] == '') {
+            throw new Exception("Message can not be empty");
+        }
 
-    $statement = $conn->prepare("INSERT INTO messages (subject, message, customer_id, agent_id, posted_on) VALUES (?,?,?,?,?)");
-    $statement->execute([$_POST['subject'],$_POST['message'],$_SESSION['customer']['id'],$_POST['agent_id'],date('Y-m-d H:i:s')]);
+        $statement = $conn->prepare("INSERT INTO messages (subject, message, customer_id, agent_id, posted_on) VALUES (?,?,?,?,?)");
+        $statement->execute([$_POST['subject'],$_POST['message'],$_SESSION['customer']['id'],$_POST['agent_id'],date('Y-m-d H:i:s')]);
 
-    //The registration-verify.php is subject to change
-    // $link = BASE_URL.'registration-verify.php?email='.$_POST['email'].'&token='.$token;
-    $email_message = 'A customer has sent you a message. Solease login to your account and check that. <br>';
-    // $email_message .= '<a href="'.$link.'">Click Here</a>';
-    $mail = new PHPMailer(true);
-    try {
-    $mail->isSMTP();
-    $mail->Host = SMTP HOST;
-    $mail->SMTPAuth = true;
-    $mail->Username = SMTP_USERNAME;
-    $mail->Password = SMTP_PASSWORD;
-    $mail->SMTPSecure = SMTP_ENCRYPTION;
-    $mail->Port = SMTP_PORT;
-    $mail->setFrom(SMTP_FROM);
-    $mail->addAddress($_POST['email']);
-    $mail->isHTML(true);
-    $mail->Subject = 'Registration Verification Email';
-    $mail->Body = $email_message;
-    $mail->send();
-    $success_message = 'Registration is completed. An email is sent to your email address. Please check that and verify the registration.';
+    
+        $email_message = 'A customer has sent you a message. So please login to your account and check that. <br>';
+
+        $statement = $conn->prepare("SELECT * FROM agents WHERE id=?");
+        $statement->execute([$_POST['agent_id']]);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $total = $statement->rowCount();
+        foreach ($result as $row) {
+            $agent_mail = $row['email'];
+        }
+        
+        $mail = new PHPMailer(true);
+        try {
+                $mail->isSMTP();
+                $mail->Host = SMTP_HOST;
+                $mail->SMTPAuth = true;
+                $mail->Username = SMTP_USERNAME;
+                $mail->Password = SMTP_PASSWORD;
+                $mail->SMTPSecure = SMTP_ENCRYPTION;
+                $mail->Port = SMTP_PORT;
+                $mail->setFrom(SMTP_FROM);
+                $mail->addAddress($agent_mail);
+                $mail->isHTML(true);
+                $mail->Subject = 'Customer Message';
+                $mail->Body = $email_message;
+                $mail->send();
+                $success_message = 'Message is sent successfully';
+                $_SESSION['success_message'] = $success_message;
+                header('location: ' . BASE_URL . 'customer-messages');
+                exit;
+        } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+
     } catch (Exception $e) {
-    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-    }
-    $success_message = "Registration is successful. Check your email and verify registration to login";
-    // Use this when you add value to the input field;
-    unset($_POST['fullname']);
-    unset($_POST['email']);
-    } catch (Exception $e) {
-    $error_message = $e->getMessage();
+        $error_message = $e->getMessage();
+        header('location: ' . BASE_URL . 'customer-message-create');
     }
    }
 ?>
@@ -71,7 +84,7 @@ require_once('header.php');
                 </div>
                 <div class="col-lg-9 col-md-12">
                     <a href="<?php echo BASE_URL; ?>customer-messages.php" class="btn btn-primary btn-sm mb_20">All Message</a>
-                    <form action="customer-edit-profile.php" method="post">
+                    <form action="customer-message-create.php" method="post">
             <div class="row">
                 
                 <div class="col-md-12 mb-3">
@@ -84,7 +97,7 @@ require_once('header.php');
                     <label for="">Message</label>
                     <div class="form-group">
                         <div class="mb-3">
-                            <textarea class="form-control editor" name="" id="" rows="3"></textarea>
+                            <textarea class="form-control editor" name="message" id="" rows="3"></textarea>
                         </div>
                         
                     </div>

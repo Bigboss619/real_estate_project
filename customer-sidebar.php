@@ -6,7 +6,7 @@
                 <li class="list-group-item <?php if($cur_page == 'customer-wishlist.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>customer-wishlist">Wishlist</a>
                 </li>
-                <li class="list-group-item <?php if($cur_page == 'customer-messages.php' || $cur_page == 'customer-message-create.php') {echo 'active';} ?>">
+                <li class="list-group-item <?php if($cur_page == 'customer-messages.php' || $cur_page == 'customer-message-create.php' || $cur_page == 'customer-message.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>customer-messages">Messages</a>
                 </li>
                 <li class="list-group-item <?php if($cur_page == 'customer-edit-profile.php') {echo 'active';} ?>">
