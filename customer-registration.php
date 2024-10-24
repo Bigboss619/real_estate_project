@@ -31,10 +31,10 @@
 
             $link = BASE_URL.'customer-registration-verify.php?email='.$_POST['email'].'&token='.$token;
             $email_message = 'Please click on this link to verify registration: <br>';
-            $email_message .= '<a href="'.$link.'">Click Here</a>';
+            $email_message .= '<a href="'.$link.'">Click Here</a>';            
 
             $statement = $conn->prepare("INSERT INTO customer (fullname,email,photo,password,token,status) VALUES(?,?,?,?,?,?)");
-            $statement->execute([$_POST['fullname'], $_POST['email'],'',$password, $token,0]);
+            $statement->execute([$_POST['fullname'], $_POST['email'],$password, $token,0]);
 
             $mail = new PHPMailer(true);
             try {
@@ -66,10 +66,12 @@
         } catch (Exception $e) {
             $error_message = $e->getMessage();
         }
+        
     }
+    
 ?>
 
-<div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg);">
+<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg);">
     <div class="bg"></div>
     <div class="container">
         <div class="row">

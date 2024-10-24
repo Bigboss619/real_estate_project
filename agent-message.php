@@ -7,9 +7,9 @@ require_once('header.php');
  use PHPMailer\PHPMailer\Exception;
  ?>
 <?php
-    if(!isset($_SESSION['customer']))
+    if(!isset($_SESSION['agents']))
     {
-        header('location: '.BASE_URL.'customer-login');
+        header('location: '.BASE_URL.'agent-login');
         exit;
     }
     $statement = $conn->prepare("SELECT * FROM 
@@ -17,13 +17,13 @@ require_once('header.php');
     $statement->execute([$_GET['id']]);
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    $statement = $conn->prepare("SELECT * FROM agents WHERE id=?");
-    $statement->execute([$result[0]['agent_id']]);
+    $statement = $conn->prepare("SELECT * FROM customer WHERE id=?");
+    $statement->execute([$result[0]['customer_id']]);
     $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
     foreach($result1 as $row){
-        $agent_mail = $row['email'];
-        $agent_name = $row['fullname'];
-        $agent_photo = $row['photo'];
+        $customer_mail = $row['email'];
+        $customer_name = $row['fullname'];
+        $customer_photo = $row['photo'];
     }
    
 ?>
@@ -36,10 +36,11 @@ require_once('header.php');
                     throw new Exception("Reply can not be empty");
                 }
                 $statement = $conn->prepare("INSERT INTO message_replies (message_id,customer_id,agent_id,sender,reply,reply_on) VALUES(?,?,?,?,?,?)");
-                $statement->execute([$_GET['id'], $_SESSION['customer']['id'],$result[0]['agent_id'],'Customer',$_POST['reply'],date('Y-m-d H:i:s')]);
 
-                $link = BASE_URL.'agent-message/'.$_GET['id'];
-                $email_message = 'A customer has sent you message. Please login to your account and check that: <br>';
+                $statement->execute([$_GET['id'],$result[0]['customer_id'],$_SESSION['agents']['id'],'Agent',$_POST['reply'],date('Y-m-d H:i:s')]);
+
+                $link = BASE_URL.'customer-message/'.$_GET['id'];
+                $email_message = 'You got a reply from agent. Please login to your account and go to this link:<br>';
                 $email_message .= '<a href="'.$link.'">Click Here</a>';
 
                 
@@ -53,14 +54,14 @@ require_once('header.php');
                         $mail->SMTPSecure = SMTP_ENCRYPTION;
                         $mail->Port = SMTP_PORT;
                         $mail->setFrom(SMTP_FROM);
-                        $mail->addAddress($agent_mail);
+                        $mail->addAddress($customer_mail);
                         $mail->isHTML(true);
-                        $mail->Subject = 'Customer Message';
+                        $mail->Subject = 'Agent Reply';
                         $mail->Body = $email_message;
                         $mail->send();
                         $success_message = 'Message is sent successfully';
                         $_SESSION['success_message'] = $success_message;
-                        header('location: ' . BASE_URL . 'customer-message/'.$_GET['id']);
+                        header('location: ' . BASE_URL . 'agent-message/'.$_GET['id']);
                         exit;
                 } catch (Exception $e) {
                 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
@@ -84,7 +85,7 @@ require_once('header.php');
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-12">
-                    <?php require_once('customer-sidebar.php'); ?>
+                    <?php require_once('agent-sidebar.php'); ?>
                 </div>
                 <div class="col-lg-9 col-md-12">
 
@@ -108,9 +109,9 @@ require_once('header.php');
 
                         <div class="message-top">
                             <div class="photo" style="display:inline-block;">
-                                <img src="<?php echo BASE_URL;?>uploads/customer-dp/<?php echo $_SESSION['customer']['photo']; ?>" class="img-fluid rounded-circle" style="width:60px;height:60px;vertical-align:middle;" alt="">
+                                <img src="<?php echo BASE_URL;?>uploads/customer-dp/<?php echo $customer_photo; ?>" class="img-fluid rounded-circle" style="width:60px;height:60px;vertical-align:middle;" alt="">
                                 <div class="text" style="display:inline-block;vertical-align:middle;margin-left:10px;;">
-                                    <h6 style="margin-top: 10px;font-size:16px;font-weight:700;margin-bottom:5px;"><?php echo $_SESSION['customer']['fullname']; ?> <span class="badge rounded-pill text-bg-primary">Customer</span></h6>
+                                    <h6 style="margin-top: 10px;font-size:16px;font-weight:700;margin-bottom:5px;"><?php echo $customer_name; ?> <span class="badge rounded-pill text-bg-primary">Customer</span></h6>
                                     <p class="mt-3 mb-0" style="color: #838383;">Posted On: <?php echo $result[0]['posted_on']; ?></p>
                                 </div>
                             </div>
@@ -143,13 +144,13 @@ require_once('header.php');
                                             <?php 
                                             if($row['sender'] == 'Customer'):
                                             ?>
-                                            <img src="<?php echo BASE_URL;?>uploads/customer-dp/<?php echo $_SESSION['customer']['photo']; ?>" class="img-fluid rounded-circle" style="width:60px;height:60px;vertical-align:middle;" alt="">
+                                            <img src="<?php echo BASE_URL;?>uploads/customer-dp/<?php echo $customer_photo; ?>" class="img-fluid rounded-circle" style="width:60px;height:60px;vertical-align:middle;" alt="">
                                             <?php endif; ?>
 
                                             <?php 
                                             if($row['sender'] == 'Agent'):
                                             ?>
-                                            <img src="<?php echo BASE_URL;?>uploads/agent-dp/<?php echo $agent_photo; ?>" class="img-fluid rounded-circle" style="width:60px;height:60px;vertical-align:middle;" alt="">
+                                            <img src="<?php echo BASE_URL;?>uploads/agent-dp/<?php echo $_SESSION['agents']['photo']; ?>" class="img-fluid rounded-circle" style="width:60px;height:60px;vertical-align:middle;" alt="">
                                             <?php endif; ?>
 
                                             <div class="text" style="display:inline-block;vertical-align:middle;margin-left:10px;;">
@@ -157,10 +158,10 @@ require_once('header.php');
                                                 <?php 
                                                     if($row['sender'] == 'Customer'):
                                                 ?>
-                                                    <?php echo $_SESSION['customer']['fullname']; ?>
+                                                    <?php echo $customer_name; ?>
                                                     <span class="badge rounded-pill text-bg-primary">Customer</span>
                                                     <?php else: ?>
-                                                        <?php echo $agent_name; ?>
+                                                        <?php echo $_SESSION['agents']['fullname']; ?>
                                                         <span class="badge rounded-pill text-bg-success">Agent</span>
                                                     <?php endif; ?>
                                                 </h6>

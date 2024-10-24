@@ -1,18 +1,25 @@
-<?php
-require_once('header.php');
-?>
-<?php
- use PHPMailer\PHPMailer\PHPMailer;
- use PHPMailer\PHPMailer\SMTP;
- use PHPMailer\PHPMailer\Exception;
- ?>
+<?php require_once('header.php'); ?>
+
 <?php
     if(!isset($_SESSION['customer']))
     {
         header('location: '.BASE_URL.'customer-login');
         exit;
     }
+    // next auto increament id
+    $statement = $conn->prepare("SHOW TABLE STATUS LIKE 'messages'");
+    $statement->execute();
+    $result = $statement->fetchAll();
+    foreach($result as $row){
+        $next_id = $row['Auto_increment'];
+    }
+    $next_id = $next_id + 1;
 ?>
+<?php
+ use PHPMailer\PHPMailer\PHPMailer;
+ use PHPMailer\PHPMailer\SMTP;
+ use PHPMailer\PHPMailer\Exception;
+ ?>
 <?php
    if(isset($_POST['form_submit'])){
     try {
@@ -26,8 +33,12 @@ require_once('header.php');
         $statement = $conn->prepare("INSERT INTO messages (subject, message, customer_id, agent_id, posted_on) VALUES (?,?,?,?,?)");
         $statement->execute([$_POST['subject'],$_POST['message'],$_SESSION['customer']['id'],$_POST['agent_id'],date('Y-m-d H:i:s')]);
 
-    
+        
+
+
+        $link = BASE_URL.'agent-message/'.$next_id;
         $email_message = 'A customer has sent you a message. So please login to your account and check that. <br>';
+        $email_message .= '<a href="'.$link.'">Click Here</a>';
 
         $statement = $conn->prepare("SELECT * FROM agents WHERE id=?");
         $statement->execute([$_POST['agent_id']]);

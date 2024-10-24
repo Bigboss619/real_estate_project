@@ -83,9 +83,11 @@ if(isset($_POST['form_update']))
 
             $_SESSION['customer']['fullname'] = $_POST['name'];
             $_SESSION['customer']['email'] = $_POST['email'];
+            
     } catch (Exception $e) {
         $error_message = $e->getMessage();
     }
+    
 }
 ?>
 <div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">

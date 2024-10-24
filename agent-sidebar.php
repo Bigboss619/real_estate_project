@@ -15,6 +15,9 @@
                 <li class="list-group-item <?php if($cur_page == 'agent-properties.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>agent-property">All Properties</a>
                 </li>
+                <li class="list-group-item <?php if($cur_page == 'agent-messages.php' || $cur_page == 'agent-message-create.php' || $cur_page == 'agent-message.php') {echo 'active';} ?>">
+                    <a href="<?php echo BASE_URL; ?>agent-messages">Messages</a>
+                </li>
                 <li class="list-group-item <?php if($cur_page == 'agent-edit-profile.php') {echo 'active';} ?>">
                     <a href="<?php echo BASE_URL; ?>agent-edit-profile">Edit Profile</a>
                 </li>

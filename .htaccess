@@ -25,6 +25,8 @@ RewriteRule  ^agent-payment$                     agent-payment-section.php      
 RewriteRule  ^agent-order$                       agent-orders.php                      [NC,L]
 RewriteRule  ^agent-property-add$                agent-property-add.php                [NC,L]
 RewriteRule  ^agent-property$                    agent-properties.php                  [NC,L]
+RewriteRule  ^agent-messages$                   agent-messages.php                    [NC,L]
+RewriteRule  ^agent-message/(.*)$/?$            agent-message.php?id=$1               [NC,L]
 RewriteRule  ^agent-property-edit/(.*)$/?$       agent-property-edit.php?id=$1         [NC,L]
 RewriteRule  ^agent-property-delete/(.*)$/?$     agent-property-delete.php?id=$1       [NC,L]
 RewriteRule  ^agent-photo-gallery/(.*)$/?$       agent-photo-gallery.php?id=$1         [NC,L]
