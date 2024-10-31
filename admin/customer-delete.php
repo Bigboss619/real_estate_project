@@ -20,10 +20,10 @@
             $statement->execute([$id]);
 
             // Deleting the customer reply from the message reply table
-            $statement = $conn->prepare("DELETE FROM message_reply WHERE customer_id=?");
+            $statement = $conn->prepare("DELETE FROM message_replies WHERE customer_id=?");
             $statement->execute([$id]);
 
-            $statement = $conn->prepare("SELECT FROM customer WHERE id=?");
+            $statement = $conn->prepare("SELECT * FROM customer WHERE id=?");
             $statement->execute([$id]);
             $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach ($result as $row) {
@@ -33,7 +33,7 @@
                 }
             }
 
-             // Deleting the customer reply from the message reply table
+             // Deleting the customer 
              $statement = $conn->prepare("DELETE FROM customer WHERE id=?");
              $statement->execute([$id]);
 

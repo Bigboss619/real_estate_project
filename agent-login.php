@@ -2,11 +2,11 @@
 
 <!-- if a customer already logged in this code will allow him to login everytime -->
 <?php
-    if(isset($_SESSION['agent']))
-    {
-        header('location: '.BASE_URL.'agent-dashboard');
-        exit;
-    }
+    // if(isset($_SESSION['agent']))
+    // {
+    //     header('location: '.BASE_URL.'agent-dashboard');
+    //     exit;
+    // }
 ?>
 <?php
     if(isset($_POST['form_submit']))

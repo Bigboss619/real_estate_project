@@ -33,7 +33,7 @@
             $email_message = 'Please click on this link to verify registration: <br>';
             $email_message .= '<a href="'.$link.'">Click Here</a>';            
 
-            $statement = $conn->prepare("INSERT INTO customer (fullname,email,photo,password,token,status) VALUES(?,?,?,?,?,?)");
+            $statement = $conn->prepare("INSERT INTO customer (fullname,email,password,token,status) VALUES(?,?,?,?,?)");
             $statement->execute([$_POST['fullname'], $_POST['email'],$password, $token,0]);
 
             $mail = new PHPMailer(true);
