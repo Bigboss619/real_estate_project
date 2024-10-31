@@ -37,6 +37,8 @@
 
                     <li class="<?php if($cur_page == 'customer-view.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>customer-view.php"><i class="fas fa-hand-point-right"></i> <span>Customers</span></a></li>
 
+                    <li class="<?php if($cur_page == 'testimonial-view.php' || $cur_page == 'testimonial-edit.php'|| $cur_page == 'testimonial-add.php' ) {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>testimonial-view.php"><i class="fas fa-hand-point-right"></i> <span>Testimonial</span></a></li>
+
                     <li class="<?php if($cur_page == 'agent-view.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>agent-view.php"><i class="fas fa-hand-point-right"></i> <span>Agents</span></a></li>
 
                     <li class="<?php if($cur_page == 'why-choose-view.php' || $cur_page == 'why-choose-edit.php' || $cur_page == 'why-choose-add.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>why-choose-view.php"><i class="fas fa-hand-point-right"></i> <span>Why Choose Us</span></a></li>
