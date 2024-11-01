@@ -383,75 +383,38 @@ $agents_list = implode(',',$allowed_agents);
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <div class="photo">
-                        <img src="uploads/blog1.jpg" alt="" />
-                    </div>
-                    <div class="text">
-                        <h2>
-                            <a href="post.html">5 Tips for Finding Your Dream Home</a>
-                        </h2>
-                        <div class="short-des">
-                            <p>
-                                Lorem ipsum dolor sit amet, nibh saperet
-                                te pri, at nam diceret disputationi. Quo
-                                an consul impedit, usu possim evertitur
-                                dissentiet ei.
-                            </p>
+            <?php
+                $statement = $conn->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT 3");
+                $statement->execute();
+                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $total = $statement->rowCount();
+                foreach ($result as $row) {
+                    ?>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="item">
+                                <div class="photo">
+                                    <img src="<?php echo BASE_URL; ?>uploads/blog/<?php echo $row['photo']; ?>" alt="" />
+                                </div>
+                                <div class="text">
+                                    <h2>
+                                        <a href="post.html"><?php echo $row['title']; ?></a>
+                                    </h2>
+                                    <div class="short-des">
+                                        <p>
+                                            <?php echo $row['short_description']; ?>
+                                        </p>
+                                    </div>
+                                    <div class="button">
+                                        <a href="post.html" class="btn btn-primary">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="button">
-                            <a href="post.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <div class="photo">
-                        <img src="uploads/blog2.jpg" alt="" />
-                    </div>
-                    <div class="text">
-                        <h2>
-                            <a href="post.html">Pros & Cons of Renting vs. Buying</a>
-                        </h2>
-                        <div class="short-des">
-                            <p>
-                                Nec in rebum primis causae. Affert
-                                iisque ex pri, vis utinam vivendo
-                                definitionem ad, nostrum omnes que per
-                                et. Omnium antiopam.
-                            </p>
-                        </div>
-                        <div class="button">
-                            <a href="post.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="item">
-                    <div class="photo">
-                        <img src="uploads/blog3.jpg" alt="" />
-                    </div>
-                    <div class="text">
-                        <h2>
-                            <a href="post.html">Maximizing Your Investment in 2023</a>
-                        </h2>
-                        <div class="short-des">
-                            <p>
-                                Id pri placerat voluptatum, vero dicunt
-                                dissentiunt eum et, adhuc iisque vis no.
-                                Eu suavitate conten tiones definitionem
-                                mel, ex vide.
-                            </p>
-                        </div>
-                        <div class="button">
-                            <a href="post.html" class="btn btn-primary">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <?php
+                }
+            ?>
+            
+            
         </div>
     </div>
 </div>

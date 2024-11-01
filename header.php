@@ -100,7 +100,7 @@ require 'vendor/autoload.php';
                             <a href="faq.html" class="nav-link">FAQ</a>
                         </li>
                         <li class="nav-item">
-                            <a href="blog.html" class="nav-link">Blog</a>
+                            <a href="<?php echo BASE_URL; ?>blogs" class="nav-link">Blog</a>
                         </li>
                         <li class="nav-item">
                             <a href="contact.html" class="nav-link">Contact</a>
