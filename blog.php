@@ -1,5 +1,5 @@
 <?php require_once('header.php'); ?>
-<div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg');">
+<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg');">
     <div class="bg"></div>
     <div class="container">
         <div class="row">
@@ -38,7 +38,7 @@
                                         </div>
                                         <div class="text">
                                             <h2>
-                                                <a href="post.html"><?php echo $row['title']; ?></a>
+                                                <a href="<?php echo BASE_URL; ?>posts/<?php echo $row['slug']; ?>"><?php echo $row['title']; ?></a>
                                             </h2>
                                             <div class="short-des">
                                                 <p>
@@ -46,7 +46,7 @@
                                                 </p>
                                             </div>
                                             <div class="button">
-                                                <a href="post.html" class="btn btn-primary">Read More</a>
+                                                <a href="<?php echo BASE_URL; ?>posts/<?php echo $row['slug']; ?>" class="btn btn-primary">Read More</a>
                                             </div>
                                         </div>
                                     </div>

@@ -45,6 +45,8 @@
 
                     <li class="<?php if($cur_page == 'post-view.php' || $cur_page == 'post-edit.php' || $cur_page == 'post-add.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>post-view.php"><i class="fas fa-hand-point-right"></i> <span>Blog</span></a></li>
 
+                    <li class="<?php if($cur_page == 'faq-view.php' || $cur_page == 'faq-edit.php' || $cur_page == 'faq-add.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>faq-view.php"><i class="fas fa-hand-point-right"></i> <span>FAQ's</span></a></li>
+
                     <li class="<?php if($cur_page == 'form.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>form.php"><i class="fas fa-hand-point-right"></i> <span>Form</span></a></li>
 
                     <li class="<?php if($cur_page == 'table.php') {echo 'active';} ?>"><a class="nav-link" href="<?php echo ADMIN_URL; ?>table.php"><i class="fas fa-hand-point-right"></i> <span>Table</span></a></li>

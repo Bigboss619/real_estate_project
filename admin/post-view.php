@@ -26,6 +26,7 @@
         <th>SL</th>
         <th>Photo</th>
         <th>Title</th>
+        <th>Slag</th>
         <th>Posted_on</th>
         <th>Total View</th>
         <th>Action</th>
@@ -46,6 +47,7 @@
                     <img src="<?php echo BASE_URL; ?>uploads/blog/<?php echo $row['photo']; ?>" alt="" class="w_200" srcset="">
                 </td>
                 <td><?php echo $row['title']; ?></td>
+                <td><?php echo $row['slug']; ?></td>
                 <td><?php echo $row['posted_on']; ?></td>
                 <td><?php echo $row['total_view']; ?></td>
                 <td class="pt_10 pb_10">

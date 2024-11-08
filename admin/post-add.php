@@ -14,6 +14,32 @@
                 {
                     throw new Exception("Title cannot be empty" );
                 }
+                $statement = $conn->prepare("SELECT * FROM posts WHERE title=?");
+                $statement->execute([$_POST['title']]);
+                $total = $statement->rowCount();
+                if($total > 0)
+                {
+                    throw new Exception("Title Already Exist");
+                    
+                }
+                if($_POST['slag'] == "")
+                {
+                    throw new Exception("Slag cannot be empty");
+                    
+                }
+                if(!preg_match('/^[a-z0-9-]+$/', $_POST['slag']))
+                {
+                    throw new Exception("Invalid slag format. Slug should only contain lowercase letters, numbers and hyphens");
+                    
+                }
+                $statement = $conn->prepare("SELECT * FROM posts WHERE slug=?");
+                $statement->execute([$_POST['slag']]);
+                $total = $statement->rowCount();
+                if($total > 0)
+                {
+                    throw new Exception("Slug Already Exist");
+                    
+                }
                 if($_POST['short_description'] == "")
                 {
                     throw new Exception("Short Description cannot be empty" );
@@ -42,8 +68,8 @@
                 move_uploaded_file($path_tmp, '../uploads/blog/'.$filename);
                
 
-                $statement = $conn->prepare("INSERT INTO posts (title, short_description, long_description, photo, posted_on, total_view) VALUES(?, ?, ?, ?, ?, ?)");
-                $statement->execute([ $_POST['title'],  $_POST['short_description'], $_POST['description'], $filename, date('Y-m-d H:i:s'),1]);
+                $statement = $conn->prepare("INSERT INTO posts (title, slug, short_description, long_description, photo, posted_on, total_view) VALUES(?, ?, ?, ?, ?, ?, ?)");
+                $statement->execute([ $_POST['title'], $_POST['slag'],  $_POST['short_description'], $_POST['description'], $filename, date('Y-m-d H:i:s'),1]);
 
                 $success_message = 'Post is added successfully';
 
@@ -83,6 +109,10 @@
                         <div class="form-group mb-3">
                             <label>Title</label>
                             <input type="text" class="form-control" name="title" value="<?php if(isset($_POST['title'])) {echo $_POST['title'];} ?>">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Slag</label>
+                            <input type="text" class="form-control" name="slag" value="<?php if(isset($_POST['slag'])) {echo $_POST['slag'];} ?>">
                         </div>
                 
                         <div class="form-group mb-3">

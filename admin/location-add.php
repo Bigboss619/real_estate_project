@@ -27,6 +27,11 @@
                     throw new Exception("Slug cannot be empty");
                     
                 }
+                if(!preg_match('/^[a-z0-9-]+$/', $_POST['slag']))
+                {
+                    throw new Exception("Invalid slug format. Slug should only contain lowercase letters, numbers and hyphens");
+                    
+                }
                 $statement = $conn->prepare("SELECT * FROM locations WHERE slag=?");
                 $statement->execute([$_POST['slag']]);
                 $total = $statement->rowCount();
@@ -35,11 +40,7 @@
                     throw new Exception("Slug Already Exist");
                     
                 }
-                if(!preg_match('/^[a-z0-9-]+$/', $_POST['slag']))
-                {
-                    throw new Exception("Invalid slug format. Slug should only contain lowercase letters, numbers and hyphens");
-                    
-                }
+                
                 $path = $_FILES['photo']['name'];
                 $path_tmp = $_FILES['photo']['tmp_name'];
                 if($path == '')

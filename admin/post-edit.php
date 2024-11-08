@@ -21,6 +21,7 @@
                         // echo 'Everything is GOod';
                         // Now it's safe to access $result[0]['name'] and $result[0]['slag']
                         $title = $result['title'] ?? '';
+                        $slag = $result['slug'] ?? '';
                         $short_description = $result['short_description'] ?? '';
                         $long_description = $result['long_description'] ?? '';
                         $photo = $result['photo'] ?? '';
@@ -39,6 +40,30 @@
                     if($_POST['title'] == "")
                     {
                         throw new Exception("Title cannot be empty" );
+                    }
+                    $statement = $conn->prepare("SELECT * FROM posts WHERE title=? AND id!=?");
+                    $statement->execute([$_POST['title'],$_GET['id']]);
+                    $total = $statement->rowCount();
+                    if($total > 0)
+                    {
+                        throw new Exception("Title Already Exist");            
+                    }
+                    if($_POST['slag'] == "")
+                    {
+                        throw new Exception("Slug cannot be empty");
+                        
+                    }
+                    $statement = $conn->prepare("SELECT * FROM posts WHERE slug=? AND id!=?");
+                    $statement->execute([$_POST['slag'],$_GET['id']]);
+                    $total = $statement->rowCount();
+                    if($total > 0)
+                    {
+                        throw new Exception("Slug Already Exist");            
+                    }
+                    if(!preg_match('/^[a-z0-9-]+$/', $_POST['slag']))
+                    {
+                        throw new Exception("Invalid slug format. Slug should only contain lowercase letters, numbers and hyphens");
+                        
                     }
                     if($_POST['short_description'] == "")
                     {
@@ -74,9 +99,10 @@
                                     $filename = $photo;
                                  }
                         
-                    $statement = $conn->prepare("UPDATE posts SET title=?, short_description=?, long_description=?, photo=? WHERE id=?");
+                    $statement = $conn->prepare("UPDATE posts SET title=?, slug=?, short_description=?, long_description=?, photo=? WHERE id=?");
                     $statement->execute([
                         $_POST['title'], 
+                        $_POST['slag'],
                         $_POST['short_description'],
                         $_POST['description'],
                         $filename, 
@@ -127,6 +153,11 @@
                         <div class="form-group mb-3">
                             <label>Title</label>
                             <input type="text" class="form-control" name="title" value="<?php echo htmlspecialchars($title);  ?>">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Slug</label>
+                            <input type="text" class="form-control" name="slag" value="<?php echo htmlspecialchars($slag);  ?>">
                         </div>
                 
                         <div class="form-group mb-3">
