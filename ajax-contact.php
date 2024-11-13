@@ -39,9 +39,9 @@
                 }
 
                 //   Email Sending Codes
-                $email_message = 'Full Name: '.$_POST['name'].'<br>';
-                $email_message .= 'Email: '.$_POST['email'].'<br>';
-                $email_message .= 'Message: '.$_POST['message'].'<br>';
+                $email_message = 'Full Name: <br>'.$_POST['name'].'<br>';
+                $email_message .= '<br>Email: <br>'.$_POST['email'].'<br>';
+                $email_message .= '<br>Message: <br>'.nl2br($_POST['message']).'<br>';
                 $mail = new PHPMailer(true);
                 $mail->isSMTP();
                 $mail->Host = SMTP_HOST;
@@ -62,5 +62,5 @@
         $arr['error_message'] = $error_message;
         }
     }
-    // echo json_encode($arr);
+    echo json_encode($arr);
 ?>

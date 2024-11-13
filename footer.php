@@ -74,9 +74,9 @@
                         To get the latest news from our website, please
                         subscribe us here:
                     </p>
-                    <form action="" method="post">
+                    <form action="<?php echo BASE_URL; ?>ajax-newsletter.php" method="post" class="form_newsletter">
                         <div class="form-group">
-                            <input type="text" name="" class="form-control">
+                            <input type="text" name="email" placeholder="Email Address" class="form-control">
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary" value="Subscribe Now">
