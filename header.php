@@ -97,13 +97,13 @@ require 'vendor/autoload.php';
                             <a href="<?php echo BASE_URL; ?>pricing" class="nav-link">Pricing</a>
                         </li>
                         <li class="nav-item">
-                            <a href="faq.html" class="nav-link">FAQ</a>
+                            <a href="<?php echo BASE_URL; ?>faq" class="nav-link">FAQ</a>
                         </li>
                         <li class="nav-item">
                             <a href="<?php echo BASE_URL; ?>blogs" class="nav-link">Blog</a>
                         </li>
                         <li class="nav-item">
-                            <a href="contact.html" class="nav-link">Contact</a>
+                            <a href="<?php echo BASE_URL; ?>contact-us" class="nav-link">Contact</a>
                         </li>
                         <?php if(isset($_SESSION['customer'])): ?>
                             <li class="nav-item">

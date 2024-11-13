@@ -43,7 +43,7 @@
 <div class="main-content">
 <section class="section">
 <div class="section-header justify-content-between">
-<h1>Add Location</h1>
+<h1>Add Type</h1>
 <div class="ml-auto">
 <a href="<?php echo ADMIN_URL; ?>type-view.php" class="btn btn-primary"><i class="fas fa-plus"></i> View All</a>
 </div>

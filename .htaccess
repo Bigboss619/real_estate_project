@@ -6,7 +6,9 @@ RewriteRule  ^location/(.*)$/?$                     location.php?p=$1           
 RewriteRule  ^pricing$                              pricing.php                              [NC,L]
 RewriteRule  ^locations$                            location.php                             [NC,L]
 RewriteRule  ^blogs$                                blog.php                                 [NC,L]
-RewriteRule  ^posts/(.*)$/?$                        posts.php?slug=$1                          [NC,L]
+RewriteRule  ^faq$                                  faq.php                                  [NC,L]
+RewriteRule  ^contact-us$                           contact.php                              [NC,L]
+RewriteRule  ^posts/(.*)$/?$                        posts.php?slug=$1                        [NC,L]
 
 RewriteRule  ^customer-registration$                customer-registration.php                [NC,L]
 RewriteRule  ^customer-login$                       customer-login.php                       [NC,L]
