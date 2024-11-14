@@ -6,7 +6,16 @@
     use PHPMailer\PHPMailer\SMTP;
     use PHPMailer\PHPMailer\Exception;
     require 'vendor/autoload.php';
+
     $arr = array();
+
+    $statement = $conn->prepare("SELECT * FROM admins WHERE id=?");
+    $statement->execute(array(1));
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    foreach($result as $row){
+        $admin_email = $row['email'];
+    }
+
     if(isset($_POST['email'])){
     try {
     
@@ -32,13 +41,12 @@
             $statement = $conn->prepare("INSERT INTO subscribers (email, token, status) VALUES (?, ?, ?)");
             $statement->execute([$email, $token, 0]);
 
-            $verification_link = BASE_URL.'/verify-subscriber.php?email='.$email.'&token='.$token;
+            $verification_link = BASE_URL.'verify-subscriber.php?email='.$email.'&token='.$token;
 
             //   Email Sending Codes
-            $email_message = 'Full Name: '.$_POST['full_name'].'<br>';
-            $email_message .= 'Email: '.$_POST['email'].'<br>';
-            $email_message .= 'Phone: '.$_POST['phone'].'<br>';
-            $email_message .= 'Message: '.$_POST['comment'].'<br>';
+            $email_message = 'Please click on the following link to verify your subscription <br>';
+            $email_message .= '<a href="'.$verification_link.'">'.$verification_link.'</a>';
+           
             $mail = new PHPMailer(true);
             $mail->isSMTP();
             $mail->Host = SMTP_HOST;
@@ -50,7 +58,7 @@
             $mail->setFrom(SMTP_FROM);
             $mail->addAddress($_POST['email']);
             $mail->isHTML(true);
-            $mail->Subject = 'Enquery Form Email Customer';
+            $mail->Subject = 'Verify Subscription';
             $mail->Body = $email_message;
             $mail->send();
             

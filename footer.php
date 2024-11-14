@@ -114,6 +114,56 @@
     <i class="fas fa-angle-up"></i>
 </div>
 
+<script>
+(function($){
+"use strict";
+$(document).ready(function(){
+$('.form_newsletter').on('submit', function(e){
+e.preventDefault();
+let formData = new FormData(this);
+let form = this;
+$.ajax({
+url: this.action,
+type: 'POST',
+data: formData,
+cache: false,
+contentType: false,
+processData: false,
+success: function(response){
+try {
+// Attempt to parse the response as JSON
+let data = JSON.parse(response);
+if (data.error_message) {
+// alert(data.error_message);
+iziToast.show({
+message: data.error_message,
+position: 'topRight',
+color: 'red'
+});
+} else {
+form.reset();
+iziToast.show({
+message: data.success_message,
+position: 'topRight',
+color: 'green'
+});
+}
+} catch (error) {
+console.error('Error parsing JSON response:', error);
+alert("An unexpected error occurred. Please try again.");
+}
+},
+error: function(jqXHR, textStatus, errorThrown) {
+// Handle the case when the AJAX request fails
+console.error('AJAX error:', textStatus, errorThrown);
+alert('There was a problem with the request. Please try again later.');
+}
+});
+});
+});
+})(jQuery);
+</script>
+
 <script src="<?php echo BASE_URL; ?>dist-front/js/custom.js"></script>
 <?php if(isset($error_message)): ?>
 <script>
