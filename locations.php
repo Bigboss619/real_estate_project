@@ -8,7 +8,7 @@ foreach ($result as $row) {
     $l_name = $row['name'];
     }
 ?>
-<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg)">
+<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/banner.jpg)">
     <div class="bg"></div>
     <div class="container">
         <div class="row">

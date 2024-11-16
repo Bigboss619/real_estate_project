@@ -14,7 +14,7 @@ if (!isset($_SESSION['agents'])) {
     }
 }
 ?>
-<div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
+<div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/settings/banner.jpg')">
     <div class="bg"></div>
     <div class="container">
         <div class="row">

@@ -10,7 +10,7 @@ $statement = $conn->prepare("UPDATE posts SET total_view=? WHERE slug=?");
 $statement->execute([$updated_total_view, $_GET['slug']]);
 
 ?>
-<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner.jpg');">
+<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/banner.jpg');">
     <div class="bg"></div>
     <div class="container">
         <div class="row">

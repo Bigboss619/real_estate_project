@@ -35,7 +35,7 @@
 <tbody>
     <?php
     $i = 0;
-    $statement = $conn->prepare("SELECT * FROM posts ORDER BY total_view ASC");
+    $statement = $conn->prepare("SELECT * FROM posts ORDER BY total_view DESC");
     $statement->execute();
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     foreach ($result as $row) {

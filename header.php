@@ -19,6 +19,20 @@ use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';
 // $cur_page = basename($_SERVER['REQUEST_URI']);
 
+// Automatic Logout System
+$sessionTimeout = 60 * 60; // 1 hour
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $sessionTimeout){
+    unset($_SESSION['customer']);
+    unset($_SESSION['agents']);
+    session_unset();
+    session_destroy();
+    $_SESSION['error_message'] = 'Session Timeout. Please login.';
+    header('Location: ' . BASE_URL.'select');
+    exit;
+}
+// Update the last activity time
+$_SESSION['last_activity'] = time();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

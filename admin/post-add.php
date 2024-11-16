@@ -7,6 +7,11 @@
     }
 ?>
 <?php
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
+    use PHPMailer\PHPMailer\Exception;
+?>
+<?php
     if(isset($_POST['form_submit']))
     {
         try {
@@ -71,6 +76,34 @@
                 $statement = $conn->prepare("INSERT INTO posts (title, slug, short_description, long_description, photo, posted_on, total_view) VALUES(?, ?, ?, ?, ?, ?, ?)");
                 $statement->execute([ $_POST['title'], $_POST['slag'],  $_POST['short_description'], $_POST['description'], $filename, date('Y-m-d H:i:s'),1]);
 
+                $email_message = 'A new post has been published. So you can check it from this link: <br>';
+                $email_message .= '<a href="'.BASE_URL.'posts/'.$_POST['slag'].'">'.$_POST['title'].'</a>';
+                $mail = new PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host = SMTP_HOST;
+                    $mail->SMTPAuth = true;
+                    $mail->Username = SMTP_USERNAME;
+                    $mail->Password = SMTP_PASSWORD;
+                    $mail->SMTPSecure = SMTP_ENCRYPTION;
+                    $mail->Port = SMTP_PORT;
+                    $mail->setFrom(SMTP_FROM);
+                    $mail->Subject = $_POST['subject'];
+                    $mail->Body = nl2br($email_message);
+
+                    $statement = $conn->prepare("SELECT * FROM subscribers WHERE status=?");
+                    $statement->execute([1]);
+                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($result as $row) {
+                        $mail2 = clone $mail;
+                        $mail2->addAddress($row['email']);
+                        $mail2->isHTML(true);
+                        $mail2->send();
+                    }
+                    $success_message = 'Email is sent successfully';
+                } catch (Exception $e) {
+                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                }
                 $success_message = 'Post is added successfully';
 
                 $_SESSION['success_message'] = $success_message;

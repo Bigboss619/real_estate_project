@@ -6,6 +6,16 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php';
+// Automatic Logout System
+$sessionTimeout = 60 * 60; // 1 minute
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $sessionTimeout){
+    session_unset();
+    session_destroy();
+    header('Location: ' .ADMIN_URL.'login.php');
+    exit;
+}
+// Update the last activity time
+$_SESSION['last_activity'] = time();
 ?>
 <!DOCTYPE html>
 <html lang="en">

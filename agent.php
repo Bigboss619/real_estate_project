@@ -20,7 +20,7 @@ $statement = $conn->prepare("SELECT * FROM agents WHERE id=?");
 $statement->execute([$_GET['id']]);
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 ?>
-<div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/banner.jpg')">
+<div class="page-top" style="background-image: url('<?php echo BASE_URL; ?>uploads/settings/banner.jpg')">
         <div class="bg"></div>
         <div class="container">
             <div class="row">

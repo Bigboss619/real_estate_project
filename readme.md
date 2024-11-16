@@ -6,10 +6,6 @@ User Login
 Email = eugochukwu91021@gmail.com
 Password = Bigboss619$$
 
-User 2
-Email = bensonvictor@gmail.com
-Password = bensonvictor123
-
 Agent
 Email= uchepraise911@gmail.com
 Password= UchePraise9

@@ -8,6 +8,8 @@ RewriteRule  ^locations$                            location.php                
 RewriteRule  ^blogs$                                blog.php                                 [NC,L]
 RewriteRule  ^faq$                                  faq.php                                  [NC,L]
 RewriteRule  ^contact-us$                           contact.php                              [NC,L]
+RewriteRule  ^privacy-policy$                           privacy-policy.php                              [NC,L]
+RewriteRule  ^terms-of-use$                           terms-of-use.php                              [NC,L]
 RewriteRule  ^posts/(.*)$/?$                        posts.php?slug=$1                        [NC,L]
 
 RewriteRule  ^customer-registration$                customer-registration.php                [NC,L]

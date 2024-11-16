@@ -42,7 +42,7 @@
                     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($result as $row) {
                         $mail2 = clone $mail;
-                        $mail2->addAddress($_POST['email']);
+                        $mail2->addAddress($row['email']);
                         $mail2->isHTML(true);
                         $mail2->send();
                     }
