@@ -1,3 +1,8 @@
+<?php
+$statement = $conn->prepare("SELECT * FROM settings WHERE id=?");
+$statement->execute([1]);
+$footer_data = $statement->fetchAll(PDO::FETCH_ASSOC);
+?>
 <div class="footer">
     <div class="container">
         <div class="row">
@@ -5,10 +10,10 @@
                 <div class="item">
                     <h2 class="heading">Important Links</h2>
                     <ul class="useful-links">
-                        <li><a href="">Home</a></li>
-                        <li><a href="">Properties</a></li>
-                        <li><a href="">Agents</a></li>
-                        <li><a href="">Blog</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>">Home</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>properties.php?name=&location_id=&type_id=&amenity_id=&purpose=&bedroom=&bathroom=&price=&p=1">Properties</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>agents/1">Agents</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>blogs">Blog</a></li>
                     </ul>
                 </div>
             </div>
@@ -16,10 +21,17 @@
                 <div class="item">
                     <h2 class="heading">Locations</h2>
                     <ul class="useful-links">
-                        <li><a href="">New York</a></li>
-                        <li><a href="">Boston</a></li>
-                        <li><a href="">Orlanco</a></li>
-                        <li><a href="">Los Angeles</a></li>
+                        <?php
+                            $statement = $conn->prepare("SELECT * FROM locations ORDER BY name ASC LIMIT 4");
+                            $statement->execute();
+                            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                           
+                            foreach ($result as $row) {
+                               ?>
+                                    <li><a href="<?php echo BASE_URL; ?>locations/<?php echo $row['slag']; ?>"><?php echo $row['name']; ?></a></li>
+                               <?php
+                            }
+                        ?> 
                     </ul>
                 </div>
             </div>
@@ -32,38 +44,55 @@
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div class="right">
-                            34 Antiger Lane, USA, 12937
+                            <?php echo $footer_data[0]['address']; ?>
                         </div>
                     </div>
                     <div class="list-item">
                         <div class="left">
                             <i class="fas fa-phone"></i>
                         </div>
-                        <div class="right">contact@arefindev.com</div>
+                        <div class="right"><?php echo $footer_data[0]['email']; ?></div>
                     </div>
                     <div class="list-item">
                         <div class="left">
                             <i class="fas fa-envelope"></i>
                         </div>
-                        <div class="right">122-222-1212</div>
+                        <div class="right"><?php echo $footer_data[0]['phone']; ?></div>
                     </div>
+
+                    <?php if($footer_data[0]['facebook'] != '' || $footer_data[0]['twitter'] || $footer_data[0]['youtube'] || $footer_data[0]['linkedln'] || $footer_data[0]['instagram']): ?>
                     <ul class="social">
-                        <li>
-                            <a href=""><i class="fab fa-facebook-f"></i></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="fab fa-twitter"></i></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="fab fa-pinterest-p"></i></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="fab fa-linkedin-in"></i></a>
-                        </li>
-                        <li>
-                            <a href=""><i class="fab fa-instagram"></i></a>
-                        </li>
+                        <?php if ($footer_data[0]['facebook'] != ''): ?>
+                            <li>
+                                <a href="<?php echo $footer_data[0]['facebook']; ?>"><i class="fab fa-facebook-f"></i></a>
+                            </li>
+                        <?php endif; ?> 
+                        
+                        <?php if ($footer_data[0]['twitter'] != ''): ?>
+                            <li>
+                                <a href="<?php echo $footer_data[0]['twitter']; ?>"><i class="fab fa-twitter"></i></a>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php if ($footer_data[0]['youtube'] != ''): ?>
+                            <li>
+                                <a href="<?php echo $footer_data[0]['youtube']; ?>"><i class="fab fa-youtube"></i></a>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php if ($footer_data[0]['linkedln'] != ''): ?>
+                            <li>
+                                <a href="<?php echo $footer_data[0]['linkedln']; ?>"><i class="fab fa-linkedin-in"></i></a>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php if ($footer_data[0]['instagram'] != ''): ?>
+                            <li>
+                                <a href="<?php echo $footer_data[0]['instagram']; ?>"><i class="fab fa-instagram"></i></a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -93,7 +122,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-6">
                 <div class="copyright">
-                    Copyright 2023, ArefinDev. All Rights Reserved.
+                 <?php echo $footer_data[0]['copyright']; ?>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">

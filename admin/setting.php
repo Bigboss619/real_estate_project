@@ -15,10 +15,27 @@ if(isset($_POST['form_update']))
 {
 
     try {
-            // if($_POST['terms'] == "")
-            // {
-            //     throw new Exception("Terms cannot be empty" );
-            // }
+            if($_POST['address'] == "")
+            {
+                throw new Exception("Address cannot be empty" );
+            }
+            if($_POST['email'] == "")
+            {
+                throw new Exception("Email cannot be empty" );
+            }
+            if($_POST['phone'] == "")
+            {
+                throw new Exception("Phone cannot be empty" );
+            }
+            if($_POST['copyright'] == "")
+            {
+                throw new Exception("Copyright Text cannot be empty" );
+            }
+            if($_POST['map'] == "")
+            {
+                throw new Exception("Map cannot be empty" );
+            }
+
 
             // Logo Section
              $path_logo = $_FILES['logo']['name'];
@@ -90,11 +107,34 @@ if(isset($_POST['form_update']))
              }
             
              
-            $statement = $conn->prepare("UPDATE settings SET logo=?, favicon=? banner=? WHERE id=?");
+            $statement = $conn->prepare("UPDATE settings SET logo=?, 
+            favicon=?,
+            banner=?,
+            address=?,
+            phone=?,
+            copyright=?,
+            email=?,
+            facebook=?,
+            instagram=?,
+            twitter=?,
+            youtube=?,
+            linkedln=?,
+            map=?
+            WHERE id=?");
             $statement->execute([
                 $filename_logo,
                 $filename_favicon,
-                $filename_banner,  
+                $filename_banner,
+                $_POST['address'],
+                $_POST['phone'],
+                $_POST['copyright'],
+                $_POST['email'],
+                $_POST['facebook'],
+                $_POST['instagram'],
+                $_POST['twitter'],
+                $_POST['youtube'],
+                $_POST['linkedin'],
+                $_POST['map'],
                 1
             ]);
 
@@ -201,19 +241,35 @@ if(isset($_POST['form_update']))
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Email</label>
-                                        <input type="text" class="form-control" name="email" value="<?php echo $existing_email; ?>s">
+                                        <input type="text" class="form-control" name="email" value="<?php echo $existing_email; ?>">
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Copyright Text</label>
-                                        <input type="text" class="form-control" name="copyright" value="<?php echo $existing_copyright; ?>s">
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label>Email</label>
-                                        <input type="text" class="form-control" name="email" value="<?php echo $existing_email; ?>s">
+                                        <input type="text" class="form-control" name="copyright" value="<?php echo $existing_copyright; ?>">
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Phone</label>
-                                        <input type="text" class="form-control" name="phone" value="<?php echo $existing_phone; ?>s">
+                                        <input type="text" class="form-control" name="phone" value="<?php echo $existing_phone; ?>">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Facebook</label>
+                                        <input type="text" class="form-control" name="facebook" value="<?php echo $existing_facebook; ?>">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Twitter</label>
+                                        <input type="text" class="form-control" name="twitter" value="<?php echo $existing_twitter; ?>">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Linkedln</label>
+                                        <input type="text" class="form-control" name="linkedln" value="<?php echo $existing_linkedln; ?>">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Instagram</label>
+                                        <input type="text" class="form-control" name="instagram" value="<?php echo $existing_instagram; ?>">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Youtube</label>
+                                        <input type="text" class="form-control" name="youtube" value="<?php echo $existing_youtube; ?>">
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Status</label>
@@ -222,6 +278,12 @@ if(isset($_POST['form_update']))
                                         </div>
                                     </div>
                                 </div>
+                                <div class="partial-header">Contact Page Map</div>
+                                <div class="partial-item">
+                                    <label for="">Map iframe code</label>
+                                    <textarea name="map" class="form-control h_100" id=""><?php echo $result[0]['map']; ?></textarea>
+                                </div>
+
                                 <div class="form-group mt_30">
                                     <button type="submit" class="btn btn-primary" name="form_update">Update</button>
                                 </div>
