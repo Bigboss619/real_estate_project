@@ -15,6 +15,7 @@ if(isset($_POST['form_update']))
 {
 
     try {
+       
             if($_POST['address'] == "")
             {
                 throw new Exception("Address cannot be empty" );
@@ -35,6 +36,31 @@ if(isset($_POST['form_update']))
             {
                 throw new Exception("Map cannot be empty" );
             }
+            if($_POST['hero_heading'] == "")
+            {
+                throw new Exception(" Hero Heading cannot be empty" );
+            }
+            if($_POST['hero_subheading'] == "")
+            {
+                throw new Exception(" Hero subheading cannot be empty" );
+            }
+            if($_POST['featured_property_heading'] == "")
+            {
+                throw new Exception("Featured Property Heading cannot be empty" );
+            }
+            if($_POST['featured_property_subheading'] == "")
+            {
+                throw new Exception("Featured Property Sub-Heading cannot be empty" );
+            }
+            if($_POST['why_choose_heading'] == "")
+            {
+                throw new Exception("Why Choose Heading cannot be empty" );
+            }
+            if($_POST['why_choose_subheading'] == "")
+            {
+                throw new Exception("Why Choose Sub-Heading cannot be empty" );
+            }
+
 
 
             // Logo Section
@@ -83,6 +109,50 @@ if(isset($_POST['form_update']))
              }
 
 
+            //  Hero Section
+            $path_hero_photo = $_FILES['hero_photo']['name'];
+            $path_tmp_hero_photo = $_FILES['hero_photo']['tmp_name'];
+            if($path_hero_photo != '')
+            {
+               $extension_hero_photo = pathinfo($path_hero_photo, PATHINFO_EXTENSION);
+               $filename_hero_photo = "hero_photo.".$extension_hero_photo;
+
+               $finfo_hero_photo = finfo_open(FILEINFO_MIME_TYPE);
+               $mime_hero_photo = finfo_file($finfo_hero_photo, $path_tmp_hero_photo);
+               if($mime_hero_photo != 'image/jpeg' && $mime_hero_photo != 'image/png')
+               {
+                   throw new Exception("Please upload a valid hero photo");
+               }
+            
+               unlink('../uploads/settings/'.$_POST['current_hero_photo']);
+               move_uploaded_file($path_tmp_hero_photo, '../uploads/settings/'.$filename_hero_photo);
+           }else
+            {
+               $filename_hero_photo = $_POST['current_hero_photo'];
+            }
+
+            // Why Choose Section
+            $path_why_choose = $_FILES['why_choose']['name'];
+            $path_tmp_why_choose = $_FILES['why_choose']['tmp_name'];
+            if($path_why_choose != '')
+            {
+               $extension_why_choose = pathinfo($path_why_choose, PATHINFO_EXTENSION);
+               $filename_why_choose = "why_choose.".$extension_why_choose;
+
+               $finfo_why_choose = finfo_open(FILEINFO_MIME_TYPE);
+               $mime_why_choose = finfo_file($finfo_why_choose, $path_tmp_why_choose);
+               if($mime_why_choose != 'image/jpeg' && $mime_why_choose != 'image/png')
+               {
+                   throw new Exception("Please upload a valid hero photo");
+               }
+            
+               unlink('../uploads/settings/'.$_POST['current_why_choose_photo']);
+               move_uploaded_file($path_tmp_why_choose, '../uploads/settings/'.$filename_why_choose);
+           }else
+            {
+               $filename_why_choose = $_POST['current_why_choose_photo'];
+            }
+
             //  Banner Section
             $path_banner = $_FILES['banner']['name'];
              $path_tmp_banner = $_FILES['banner']['tmp_name'];
@@ -106,8 +176,25 @@ if(isset($_POST['form_update']))
                 $filename_banner = 'banner.jpg';
              }
             
-             
-            $statement = $conn->prepare("UPDATE settings SET logo=?, 
+            //  Featured Property
+             if(isset($_POST['featured_property_status']) && $_POST['featured_property_status'] == 'Show'){
+                $featured_property_status = $_POST['featured_property_status'];
+            }else{
+                $featured_property_status = 'Hide';
+            }
+
+            // Why Choose Status
+            if(isset($_POST['why_choose_status']) && $_POST['why_choose_status'] == 'Show'){
+                $why_choose_status = $_POST['why_choose_status'];
+            }else{
+                $why_choose_status = 'Hide';
+            }
+
+            $statement = $conn->prepare("UPDATE settings SET 
+            logo=?,
+            hero_heading=?,
+            hero_subheading=?,
+            hero_photo=?,
             favicon=?,
             banner=?,
             address=?,
@@ -119,10 +206,21 @@ if(isset($_POST['form_update']))
             twitter=?,
             youtube=?,
             linkedln=?,
-            map=?
+            map=?,
+            featured_property_heading=?,
+            featured_property_subheading=?,
+            featured_property_status=?,
+            why_choose_heading=?,
+            why_choose_subheading=?,
+            why_choose_photo=?,
+            why_choose_status=?,
             WHERE id=?");
+
             $statement->execute([
                 $filename_logo,
+                $_POST['hero_heading'],
+                $_POST['hero_subheading'],                
+                $filename_hero_photo,
                 $filename_favicon,
                 $filename_banner,
                 $_POST['address'],
@@ -133,8 +231,15 @@ if(isset($_POST['form_update']))
                 $_POST['instagram'],
                 $_POST['twitter'],
                 $_POST['youtube'],
-                $_POST['linkedin'],
+                $_POST['linkedln'],
                 $_POST['map'],
+                $_POST['featured_property_heading'],
+                $_POST['featured_property_subheading'],
+                $featured_property_status,
+                $_POST['why_choose_heading'],
+                $_POST['why_choose_subheading'],
+                $filename_why_choose,
+                $why_choose_status,
                 1
             ]);
 
@@ -158,6 +263,7 @@ if(isset($_POST['form_update']))
         $statement->execute([1]);
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         $existing_logo = $result[0]['logo'];
+        $existing_hero_photo = $result[0]['hero_photo'];
         $existing_favicon = $result[0]['favicon'];
         $existing_banner = $result[0]['banner'];
         $existing_address = $result[0]['address'];
@@ -169,6 +275,15 @@ if(isset($_POST['form_update']))
         $existing_youtube = $result[0]['youtube'];
         $existing_linkedln = $result[0]['linkedln'];
         $existing_instagram = $result[0]['instagram'];
+        $existing_hero_heading = $result[0]['hero_heading'];
+        $existing_hero_subheading = $result[0]['hero_subheading'];
+        $featured_property_heading = $result[0]['featured_property_heading'];
+        $featured_property_subheading = $result[0]['featured_property_subheading'];
+        $why_choose_heading = $result[0]['why_choose_heading'];
+        $why_choose_photo = $result[0]['why_choose_photo'];
+        $why_choose_subheading = $result[0]['why_choose_subheading'];
+
+
     ?>
 <div class="main-content">
     <section class="section">
@@ -183,7 +298,9 @@ if(isset($_POST['form_update']))
                             <form action="setting.php" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="current_logo" value="<?php echo $existing_logo; ?>">
                                 <input type="hidden" name="current_favicon" value="<?php echo $existing_favicon; ?>">
-                                <input type="hidden" name="current_banner" value="<?php echo $existing_banner ?>">
+                                <input type="hidden" name="current_banner" value="<?php echo $existing_banner; ?>">
+                                <input type="hidden" name="current_hero_photo" value="<?php echo $existing_hero_photo; ?>">
+                                <input type="hidden" name="current_why_choose_photo" value="<?php echo $why_choose_photo; ?>">
 
                                 <!-- Logo Section -->
                                 <div class="partial-item">
@@ -271,13 +388,93 @@ if(isset($_POST['form_update']))
                                         <label>Youtube</label>
                                         <input type="text" class="form-control" name="youtube" value="<?php echo $existing_youtube; ?>">
                                     </div>
+                                   
+                                </div>
+
+                                <!-- Hero Section -->
+                                <div class="partial-header">Home Page - Hero Sections</div>
+                                <div class="partial-item">
                                     <div class="form-group mb-3">
-                                        <label>Status</label>
-                                        <div class="toggle-container">
-                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="" value="Show" checked>
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="hero_heading" value="<?php echo $existing_hero_heading; ?>">
+                                    </div>
+                            
+                                    <div class="form-group mb-3">
+                                        <label>Sub Heading</label>
+                                        <input type="text" class="form-control" name="hero_subheading" value="<?php echo $existing_hero_subheading; ?>">
+                                    </div>
+                               
+                                
+                                    <div class="form-group mb-3">
+                                        <label>Existing Photo</label>
+                                        <div>
+                                            <img src="<?php echo BASE_URL;  ?>uploads/settings/<?php echo $existing_hero_photo; ?>" alt="" class="w_300">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Change Photo</label>
+                                        <div>
+                                            <input type="file" name="hero_photo">
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <!-- Feature Property Section -->
+                                <div class="partial-header">Home Page - Featured Properties Section</div>
+                                <div class="partial-item">
+                                    <div class="form-group mb-3">
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="featured_property_heading" value="<?php echo $featured_property_heading; ?>">
+                                    </div>
+                            
+                                    <div class="form-group mb-3">
+                                        <label>Sub Heading</label>
+                                        <input type="text" class="form-control" name="featured_property_subheading" value="<?php echo $featured_property_subheading; ?>">
+                                    </div>
+                                    
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <div class="toggle-container">
+                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="featured_property_status" value="Show" <?php if($result[0]['featured_property_status'] == 'Show') {echo "checked";} ?>>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <!-- Why Choose Us Section -->
+                                <div class="partial-header">Home Page - Why Choose Us Section</div>
+                                <div class="partial-item">
+                                    <div class="form-group mb-3">
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="why_choose_heading" value="<?php echo $why_choose_heading; ?>">
+                                    </div>
+                            
+                                    <div class="form-group mb-3">
+                                        <label>Sub Heading</label>
+                                        <input type="text" class="form-control" name="why_choose_subheading" value="<?php echo $why_choose_subheading; ?>">
+                                    </div>
+                               
+                                
+                                    <div class="form-group mb-3">
+                                        <label>Existing Photo</label>
+                                        <div>
+                                            <img src="<?php echo BASE_URL;  ?>uploads/settings/<?php echo $why_choose_photo; ?>" alt="" class="w_300">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Change Photo</label>
+                                        <div>
+                                            <input type="file" name="why_choose">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <div class="toggle-container">
+                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="why_choose_status" value="Show" <?php if($result[0]['why_choose_status'] == 'Show') {echo "checked";} ?>>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="partial-header">Contact Page Map</div>
                                 <div class="partial-item">
                                     <label for="">Map iframe code</label>

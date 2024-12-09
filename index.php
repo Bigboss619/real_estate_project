@@ -11,17 +11,22 @@ foreach($result  as $row){
 }
 $agents_list = implode(',',$allowed_agents);
 ?>
+<?php
+$statement = $conn->prepare("SELECT * FROM settings WHERE id=?");
+$statement->execute([1]);
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-<div class="slider" style="background-image: url(<?php echo BASE_URL; ?>uploads/banner-home.jpg)">
+?>
+<div class="slider" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/<?php echo $result[0]['hero_photo']; ?>)">
     <div class="bg"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="item">
                     <div class="text">
-                        <h2>Discover Your New Home</h2>
+                        <h2><?php echo $result[0]['hero_heading']; ?></h2>
                         <p>
-                            You can get your desired awesome properties, homes, condos etc. here by name, category or location.
+                            <?php echo $result[0]['hero_subheading']; ?>
                         </p>
                     </div>
         <div class="search-section">
@@ -40,8 +45,8 @@ $agents_list = implode(',',$allowed_agents);
                                     <?php
                                     $statement = $conn->prepare("SELECT * FROM locations ORDER BY name ASC");
                                     $statement->execute();
-                                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($result as $row) {
+                                    $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result1 as $row) {
                                     ?>
                                         <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
 
@@ -58,8 +63,8 @@ $agents_list = implode(',',$allowed_agents);
                                     <?php
                                     $statement = $conn->prepare("SELECT * FROM types ORDER BY name ASC");
                                     $statement->execute();
-                                    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                                    foreach ($result as $row) {
+                                    $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                    foreach ($result1 as $row) {
                                     ?>
                                         <option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
                                     <?php
@@ -90,112 +95,112 @@ $agents_list = implode(',',$allowed_agents);
     </div>
 </div>
 
-
-<div class="property">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading">
-                    <h2>Featured Properties</h2>
-                    <p>Find out the awesome properties that you must love</p>
+<?php if($result[0]['featured_property_status'] == 'Show'): ?>
+    <div class="property">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading">
+                        <h2><?php echo $result[0]['featured_property_heading']; ?></h2>
+                        <p><?php echo $result[0]['featured_property_subheading']; ?></p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <?php
-            $statement = $conn->prepare("SELECT p.*,
-                 l.name as location_name,
-                 t.name as type_name,
-                 a.fullname, a.company, a.photo
-                 FROM property p
-                  JOIN locations l 
-                  ON p.location_id = l.id 
-                  JOIN types t 
-                  ON p.type_id = t.id
-                  JOIN agents a
-                  ON p.agent_id = a.id
-                 WHERE p.is_featured=? AND p.agent_id NOT IN(
-                -- Removes agent post when there packages expires
-                    SELECT a.id FROM agents a
-                    JOIN orders o
-                    ON a.id = o.agent_id
-                    WHERE o.expire_date < ? AND o.currently_active = ?
-                 ) LIMIT 6");
-            $statement->execute(['Yes', date('Y-m-d'), '1']);
-            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            $total = $statement->rowCount();
-            if (!$total) {
-            ?>
-                <div class="col-md-12">
-                    No Property Found
-                </div>
+            <div class="row">
                 <?php
-            } else {
-                foreach ($result as $row) {
+                $statement = $conn->prepare("SELECT p.*,
+                    l.name as location_name,
+                    t.name as type_name,
+                    a.fullname, a.company, a.photo
+                    FROM property p
+                    JOIN locations l 
+                    ON p.location_id = l.id 
+                    JOIN types t 
+                    ON p.type_id = t.id
+                    JOIN agents a
+                    ON p.agent_id = a.id
+                    WHERE p.is_featured=? AND p.agent_id NOT IN(
+                    -- Removes agent post when there packages expires
+                        SELECT a.id FROM agents a
+                        JOIN orders o
+                        ON a.id = o.agent_id
+                        WHERE o.expire_date < ? AND o.currently_active = ?
+                    ) LIMIT 6");
+                $statement->execute(['Yes', date('Y-m-d'), '1']);
+                $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $total = $statement->rowCount();
+                if (!$total) {
                 ?>
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="item">
-                            <div class="photo">
-                                <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
-                                <div class="top">
-                                    <div class="status-<?php if ($row['purpose'] == 'Rent') {
-                                                            echo 'rent';
-                                                        } else {
-                                                            echo 'sale';
-                                                        } ?> ">
-                                        For <?php echo $row['purpose']; ?>
+                    <div class="col-md-12">
+                        No Property Found
+                    </div>
+                    <?php
+                } else {
+                    foreach ($result1 as $row) {
+                    ?>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="item">
+                                <div class="photo">
+                                    <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
+                                    <div class="top">
+                                        <div class="status-<?php if ($row['purpose'] == 'Rent') {
+                                                                echo 'rent';
+                                                            } else {
+                                                                echo 'sale';
+                                                            } ?> ">
+                                            For <?php echo $row['purpose']; ?>
+                                        </div>
+                                        <?php if($row['is_featured'] == 'Yes'): ?>
+                                        <div class="featured">
+                                            Featured
+                                        </div>
+                                <?php endif; ?>
                                     </div>
-                                    <?php if($row['is_featured'] == 'Yes'): ?>
-                                    <div class="featured">
-                                        Featured
-                                    </div>
-                             <?php endif; ?>
+                                    <div class="price">$<?php echo $row['price']; ?></div>
+                                    <div class="wishlist"><a href="<?php echo BASE_URL; ?>customer-wishlist-add.php?id=<?php echo $row['id']; ?>"><i class="far fa-heart"></i></a></div>
                                 </div>
-                                <div class="price">$<?php echo $row['price']; ?></div>
-                                <div class="wishlist"><a href="<?php echo BASE_URL; ?>customer-wishlist-add.php?id=<?php echo $row['id']; ?>"><i class="far fa-heart"></i></a></div>
-                            </div>
-                            <div class="text">
-                                <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
-                                <div class="detail">
-                                    <div class="stat">
-                                        <div class="i1"><?php echo $row['size']; ?>sqft</div>
-                                        <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
-                                        <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
-                                    </div>
-                                    <div class="address">
-                                        <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
-                                    </div>
-                                    <div class="type-location">
-                                        <div class="i1">
-                                            <i class="fas fa-edit"></i> <?php echo $row['type_name']; ?>
+                                <div class="text">
+                                    <h3><a href="<?php echo BASE_URL; ?>single-property/<?php echo $row['id']; ?>/<?php echo $row['slug']; ?>"><?php echo $row['name']; ?></a></h3>
+                                    <div class="detail">
+                                        <div class="stat">
+                                            <div class="i1"><?php echo $row['size']; ?>sqft</div>
+                                            <div class="i2"><?php echo $row['bedroom']; ?> Bed</div>
+                                            <div class="i3"><?php echo $row['bathroom']; ?> Bath</div>
                                         </div>
-                                        <div class="i2">
-                                            <i class="fas fa-location-arrow"></i> <?php echo $row['location_name']; ?>
+                                        <div class="address">
+                                            <i class="fas fa-map-marker-alt"></i> <?php echo $row['Address']; ?>
                                         </div>
-                                    </div>
-                                    <div class="agent-section">
-                                        <?php if (empty($row['photo'])): ?>
-                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
-                                        <?php else: ?>
-                                            <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
-                                        <?php endif; ?>
+                                        <div class="type-location">
+                                            <div class="i1">
+                                                <i class="fas fa-edit"></i> <?php echo $row['type_name']; ?>
+                                            </div>
+                                            <div class="i2">
+                                                <i class="fas fa-location-arrow"></i> <?php echo $row['location_name']; ?>
+                                            </div>
+                                        </div>
+                                        <div class="agent-section">
+                                            <?php if (empty($row['photo'])): ?>
+                                                <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/default.png" alt="">
+                                            <?php else: ?>
+                                                <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
+                                            <?php endif; ?>
 
-                                        <a href=""><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>)</a>
+                                            <a href=""><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>)</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-            <?php
+                <?php
+                    }
                 }
-            }
-            ?>
+                ?>
 
 
+            </div>
         </div>
     </div>
-</div>
-
+<?php endif; ?>
 <div class="why-choose" style="background-image: url(<?php echo BASE_URL; ?>uploads/why-choose.jpg)">
     <div class="container">
         <div class="row">
@@ -212,9 +217,9 @@ $agents_list = implode(',',$allowed_agents);
             <?php
                 $statement = $conn->prepare("SELECT * FROM why_choose_items ORDER BY id");
                 $statement->execute();
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
                 $total = $statement->rowCount();
-                foreach ($result as $row) {
+                foreach ($result1 as $row) {
                     ?>
                         <div class="col-md-4">
                             <div class="inner">
@@ -304,8 +309,8 @@ $agents_list = implode(',',$allowed_agents);
                GROUP BY l.id, l.name, l.photo, l.slag
                ORDER BY location_count DESC");
                 $statement->execute();
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($result as $row) {
+                $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($result1 as $row) {
             ?>
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="item">
@@ -341,9 +346,9 @@ $agents_list = implode(',',$allowed_agents);
                     <?php
                         $statement = $conn->prepare("SELECT * FROM testimonials ORDER BY id");
                         $statement->execute();
-                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                        $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
                         $total = $statement->rowCount();
-                        foreach ($result as $row) {
+                        foreach ($result1 as $row) {
                             ?>
                                 <div class="item">
                                     <div class="photo">
@@ -386,9 +391,9 @@ $agents_list = implode(',',$allowed_agents);
             <?php
                 $statement = $conn->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT 3");
                 $statement->execute();
-                $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
                 $total = $statement->rowCount();
-                foreach ($result as $row) {
+                foreach ($result1 as $row) {
                     ?>
                         <div class="col-lg-4 col-md-6">
                             <div class="item">
