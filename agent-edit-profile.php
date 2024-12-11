@@ -65,7 +65,7 @@ if(isset($_POST['form_update']))
                     // Checking if ther was a various photo and unlink it
                     if($_SESSION['agents']['photo'] != '' && file_exists('uploads/agent-dp/'.$_SESSION['agents']['photo']))
                     {
-                        unlink('uploads/'.$_SESSION['agents']['photo']);
+                        unlink('uploads/agent-dp/'.$_SESSION['agents']['photo']);
                     }
         
                     move_uploaded_file($path_tmp, 'uploads/agent-dp/'.$filename);

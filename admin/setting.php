@@ -11,249 +11,351 @@
 // $id = $_GET['id'];                   
 
         
-if(isset($_POST['form_update']))
-{
+    if(isset($_POST['form_update']))
+    {
 
-    try {
-       
-            if($_POST['address'] == "")
-            {
-                throw new Exception("Address cannot be empty" );
-            }
-            if($_POST['email'] == "")
-            {
-                throw new Exception("Email cannot be empty" );
-            }
-            if($_POST['phone'] == "")
-            {
-                throw new Exception("Phone cannot be empty" );
-            }
-            if($_POST['copyright'] == "")
-            {
-                throw new Exception("Copyright Text cannot be empty" );
-            }
-            if($_POST['map'] == "")
-            {
-                throw new Exception("Map cannot be empty" );
-            }
-            if($_POST['hero_heading'] == "")
-            {
-                throw new Exception(" Hero Heading cannot be empty" );
-            }
-            if($_POST['hero_subheading'] == "")
-            {
-                throw new Exception(" Hero subheading cannot be empty" );
-            }
-            if($_POST['featured_property_heading'] == "")
-            {
-                throw new Exception("Featured Property Heading cannot be empty" );
-            }
-            if($_POST['featured_property_subheading'] == "")
-            {
-                throw new Exception("Featured Property Sub-Heading cannot be empty" );
-            }
-            if($_POST['why_choose_heading'] == "")
-            {
-                throw new Exception("Why Choose Heading cannot be empty" );
-            }
-            if($_POST['why_choose_subheading'] == "")
-            {
-                throw new Exception("Why Choose Sub-Heading cannot be empty" );
-            }
-
-
-
-            // Logo Section
-             $path_logo = $_FILES['logo']['name'];
-             $path_tmp_logo = $_FILES['logo']['tmp_name'];
-             
-             if($path_logo != '')
-             {
-                $extension_logo = pathinfo($path_logo, PATHINFO_EXTENSION);
-                $filename_logo = "logo.".$extension_logo;
-
-                $finfo_logo = finfo_open(FILEINFO_MIME_TYPE);
-                $mime_logo = finfo_file($finfo_logo, $path_tmp_logo);
-                if($mime_logo != 'image/jpeg' && $mime_logo != 'image/png')
+        try {
+        
+                if($_POST['address'] == "")
                 {
-                    throw new Exception("Please upload a valid logo");
+                    throw new Exception("Address cannot be empty" );
                 }
-             
-                unlink('../uploads/settings/'.$_POST['current_logo']);
-                move_uploaded_file($path_tmp_logo, '../uploads/settings/'.$filename_logo);
-            }else
-             {
-                $filename_logo = $_POST['current_logo'];
-             }
-
-            // Favicon Section
-             $path_favicon = $_FILES['favicon']['name'];
-             $path_tmp_favicon = $_FILES['favicon']['tmp_name'];
-             if($path_favicon != '')
-             {
-                $extension_favicon = pathinfo($path_favicon, PATHINFO_EXTENSION);
-                $filename_favicon = "favicon.".$extension_favicon;
-
-                $finfo_favicon = finfo_open(FILEINFO_MIME_TYPE);
-                $mime_favicon = finfo_file($finfo_favicon, $path_tmp_favicon);
-                if($mime_favicon != 'image/jpeg' && $mime_favicon != 'image/png')
+                if($_POST['email'] == "")
                 {
-                    throw new Exception("Please upload a valid Favicon");
+                    throw new Exception("Email cannot be empty" );
                 }
-             
-                unlink('../uploads/settings/'.$_POST['current_favicon']);
-                move_uploaded_file($path_tmp_favicon, '../uploads/settings/'.$filename_favicon);
-            }else
-             {
-                $filename_favicon = $_POST['current_favicon'];
-             }
-
-
-            //  Hero Section
-            $path_hero_photo = $_FILES['hero_photo']['name'];
-            $path_tmp_hero_photo = $_FILES['hero_photo']['tmp_name'];
-            if($path_hero_photo != '')
-            {
-               $extension_hero_photo = pathinfo($path_hero_photo, PATHINFO_EXTENSION);
-               $filename_hero_photo = "hero_photo.".$extension_hero_photo;
-
-               $finfo_hero_photo = finfo_open(FILEINFO_MIME_TYPE);
-               $mime_hero_photo = finfo_file($finfo_hero_photo, $path_tmp_hero_photo);
-               if($mime_hero_photo != 'image/jpeg' && $mime_hero_photo != 'image/png')
-               {
-                   throw new Exception("Please upload a valid hero photo");
-               }
-            
-               unlink('../uploads/settings/'.$_POST['current_hero_photo']);
-               move_uploaded_file($path_tmp_hero_photo, '../uploads/settings/'.$filename_hero_photo);
-           }else
-            {
-               $filename_hero_photo = $_POST['current_hero_photo'];
-            }
-
-            // Why Choose Section
-            $path_why_choose = $_FILES['why_choose']['name'];
-            $path_tmp_why_choose = $_FILES['why_choose']['tmp_name'];
-            if($path_why_choose != '')
-            {
-               $extension_why_choose = pathinfo($path_why_choose, PATHINFO_EXTENSION);
-               $filename_why_choose = "why_choose.".$extension_why_choose;
-
-               $finfo_why_choose = finfo_open(FILEINFO_MIME_TYPE);
-               $mime_why_choose = finfo_file($finfo_why_choose, $path_tmp_why_choose);
-               if($mime_why_choose != 'image/jpeg' && $mime_why_choose != 'image/png')
-               {
-                   throw new Exception("Please upload a valid hero photo");
-               }
-            
-               unlink('../uploads/settings/'.$_POST['current_why_choose_photo']);
-               move_uploaded_file($path_tmp_why_choose, '../uploads/settings/'.$filename_why_choose);
-           }else
-            {
-               $filename_why_choose = $_POST['current_why_choose_photo'];
-            }
-
-            //  Banner Section
-            $path_banner = $_FILES['banner']['name'];
-             $path_tmp_banner = $_FILES['banner']['tmp_name'];
-             if($path_banner != '')
-             {
-                $extension_banner = pathinfo($path_banner, PATHINFO_EXTENSION);
-                $filename_banner = "banner.jpg";
-
-                $finfo_banner = finfo_open(FILEINFO_MIME_TYPE);
-                $mime_banner = finfo_file($finfo_banner, $path_tmp_banner);
-                if($mime_banner != 'image/jpeg' && $mime_banner != 'image/png')
+                if($_POST['phone'] == "")
                 {
-                    throw new Exception("Please upload a valid Banner Photo");
+                    throw new Exception("Phone cannot be empty" );
+                }
+                if($_POST['copyright'] == "")
+                {
+                    throw new Exception("Copyright Text cannot be empty" );
+                }
+                if($_POST['map'] == "")
+                {
+                    throw new Exception("Map cannot be empty" );
+                }
+                if($_POST['hero_heading'] == "")
+                {
+                    throw new Exception(" Hero Heading cannot be empty" );
+                }
+                if($_POST['hero_subheading'] == "")
+                {
+                    throw new Exception(" Hero subheading cannot be empty" );
+                }
+                if($_POST['featured_property_heading'] == "")
+                {
+                    throw new Exception("Featured Property Heading cannot be empty" );
+                }
+                if($_POST['featured_property_subheading'] == "")
+                {
+                    throw new Exception("Featured Property Sub-Heading cannot be empty" );
+                }
+                if($_POST['why_choose_heading'] == "")
+                {
+                    throw new Exception("Why Choose Heading cannot be empty" );
+                }
+                if($_POST['why_choose_subheading'] == "")
+                {
+                    throw new Exception("Why Choose Sub-Heading cannot be empty" );
+                }
+                if($_POST['agent_heading'] == "")
+                {
+                    throw new Exception("Agent Heading cannot be empty" );
+                }
+                if($_POST['agent_subheading'] == "")
+                {
+                    throw new Exception("Agent Sub-Heading cannot be empty" );
+                }
+                if($_POST['location_heading'] == "")
+                {
+                    throw new Exception("Location Heading cannot be empty" );
+                }
+                if($_POST['location_subheading'] == "")
+                {
+                    throw new Exception("Location Sub-Heading cannot be empty" );
+                }
+                if($_POST['news_heading'] == "")
+                {
+                    throw new Exception("News Heading cannot be empty" );
+                }
+                if($_POST['news_subheading'] == "")
+                {
+                    throw new Exception("News Sub-Heading cannot be empty" );
+                }
+                if($_POST['testimonial_heading'] == "")
+                {
+                    throw new Exception("Testimonial Heading cannot be empty" );
                 }
 
-                $current_banner_path = '../uploads/settings/' . $_POST['current_banner'];
-                unlink($current_banner_path);
-                move_uploaded_file($path_tmp_banner, '../uploads/settings/'.$filename_banner);
+
+                // Logo Section
+                $path_logo = $_FILES['logo']['name'];
+                $path_tmp_logo = $_FILES['logo']['tmp_name'];
+                
+                if($path_logo != '')
+                {
+                    $extension_logo = pathinfo($path_logo, PATHINFO_EXTENSION);
+                    $filename_logo = "logo.".$extension_logo;
+
+                    $finfo_logo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_logo = finfo_file($finfo_logo, $path_tmp_logo);
+                    if($mime_logo != 'image/jpeg' && $mime_logo != 'image/png')
+                    {
+                        throw new Exception("Please upload a valid logo");
+                    }
+                
+                    unlink('../uploads/settings/'.$_POST['current_logo']);
+                    move_uploaded_file($path_tmp_logo, '../uploads/settings/'.$filename_logo);
+                }else
+                {
+                    $filename_logo = $_POST['current_logo'];
+                }
+
+                // Favicon Section
+                $path_favicon = $_FILES['favicon']['name'];
+                $path_tmp_favicon = $_FILES['favicon']['tmp_name'];
+                if($path_favicon != '')
+                {
+                    $extension_favicon = pathinfo($path_favicon, PATHINFO_EXTENSION);
+                    $filename_favicon = "favicon.".$extension_favicon;
+
+                    $finfo_favicon = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_favicon = finfo_file($finfo_favicon, $path_tmp_favicon);
+                    if($mime_favicon != 'image/jpeg' && $mime_favicon != 'image/png')
+                    {
+                        throw new Exception("Please upload a valid Favicon");
+                    }
+                
+                    unlink('../uploads/settings/'.$_POST['current_favicon']);
+                    move_uploaded_file($path_tmp_favicon, '../uploads/settings/'.$filename_favicon);
+                }else
+                {
+                    $filename_favicon = $_POST['current_favicon'];
+                }
+
+
+                //  Hero Section
+                $path_hero_photo = $_FILES['hero_photo']['name'];
+                $path_tmp_hero_photo = $_FILES['hero_photo']['tmp_name'];
+                if($path_hero_photo != '')
+                {
+                $extension_hero_photo = pathinfo($path_hero_photo, PATHINFO_EXTENSION);
+                $filename_hero_photo = "hero_photo.".$extension_hero_photo;
+
+                $finfo_hero_photo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime_hero_photo = finfo_file($finfo_hero_photo, $path_tmp_hero_photo);
+                if($mime_hero_photo != 'image/jpeg' && $mime_hero_photo != 'image/png')
+                {
+                    throw new Exception("Please upload a valid hero photo");
+                }
+                
+                unlink('../uploads/settings/'.$_POST['current_hero_photo']);
+                move_uploaded_file($path_tmp_hero_photo, '../uploads/settings/'.$filename_hero_photo);
             }else
-             {
-                $filename_banner = 'banner.jpg';
-             }
-            
-            //  Featured Property
-             if(isset($_POST['featured_property_status']) && $_POST['featured_property_status'] == 'Show'){
-                $featured_property_status = $_POST['featured_property_status'];
-            }else{
-                $featured_property_status = 'Hide';
-            }
+                {
+                $filename_hero_photo = $_POST['current_hero_photo'];
+                }
 
-            // Why Choose Status
-            if(isset($_POST['why_choose_status']) && $_POST['why_choose_status'] == 'Show'){
-                $why_choose_status = $_POST['why_choose_status'];
-            }else{
-                $why_choose_status = 'Hide';
-            }
+                // Why Choose Section
+                $path_why_choose = $_FILES['why_choose']['name'];
+                $path_tmp_why_choose = $_FILES['why_choose']['tmp_name'];
+                if ($path_why_choose != '') {
+                    $extension_why_choose = pathinfo($path_why_choose, PATHINFO_EXTENSION);
+                    $filename_why_choose = "why_choose." . $extension_why_choose;
+                
+                    $finfo_why_choose = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_why_choose = finfo_file($finfo_why_choose, $path_tmp_why_choose);
+                    if ($mime_why_choose != 'image/jpeg' && $mime_why_choose != 'image/png') {
+                        throw new Exception("Please upload a valid photo for Why Choose Us section");
+                    }
+                
+                    unlink('../uploads/settings/' . $_POST['current_why_choose_photo']);
+                    move_uploaded_file($path_tmp_why_choose, '../uploads/settings/' . $filename_why_choose);
+                } else {
+                    $filename_why_choose = $_POST['current_why_choose_photo'];
+                }
+                
 
-            $statement = $conn->prepare("UPDATE settings SET 
-            logo=?,
-            hero_heading=?,
-            hero_subheading=?,
-            hero_photo=?,
-            favicon=?,
-            banner=?,
-            address=?,
-            phone=?,
-            copyright=?,
-            email=?,
-            facebook=?,
-            instagram=?,
-            twitter=?,
-            youtube=?,
-            linkedln=?,
-            map=?,
-            featured_property_heading=?,
-            featured_property_subheading=?,
-            featured_property_status=?,
-            why_choose_heading=?,
-            why_choose_subheading=?,
-            why_choose_photo=?,
-            why_choose_status=?,
-            WHERE id=?");
+                //  Banner Section
+                $path_banner = $_FILES['banner']['name'];
+                $path_tmp_banner = $_FILES['banner']['tmp_name'];
+                if($path_banner != '')
+                {
+                    $extension_banner = pathinfo($path_banner, PATHINFO_EXTENSION);
+                    $filename_banner = "banner_photo." . $extension_banner;
 
-            $statement->execute([
-                $filename_logo,
-                $_POST['hero_heading'],
-                $_POST['hero_subheading'],                
-                $filename_hero_photo,
-                $filename_favicon,
-                $filename_banner,
-                $_POST['address'],
-                $_POST['phone'],
-                $_POST['copyright'],
-                $_POST['email'],
-                $_POST['facebook'],
-                $_POST['instagram'],
-                $_POST['twitter'],
-                $_POST['youtube'],
-                $_POST['linkedln'],
-                $_POST['map'],
-                $_POST['featured_property_heading'],
-                $_POST['featured_property_subheading'],
-                $featured_property_status,
-                $_POST['why_choose_heading'],
-                $_POST['why_choose_subheading'],
-                $filename_why_choose,
-                $why_choose_status,
-                1
-            ]);
+                    $finfo_banner = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_banner = finfo_file($finfo_banner, $path_tmp_banner);
+                    if($mime_banner != 'image/jpeg' && $mime_banner != 'image/png')
+                    {
+                        throw new Exception("Please upload a valid Banner Photo");
+                    }
 
-            $success_message = 'Data is updated successfully';
+                    $current_banner_path = '../uploads/settings/' . $_POST['current_banner'];
+                    unlink($current_banner_path);
+                    move_uploaded_file($path_tmp_banner, '../uploads/settings/'.$filename_banner);
+                }else
+                {
+                    $filename_banner = $_POST['current_banner'];
+                }
 
-            $_SESSION['success_message'] = $success_message;
+                // Testimonial Section
+                $path_testimonial_photo = $_FILES['testimonial_photo']['name'];
+                $path_tmp_testimonial_photo = $_FILES['testimonial_photo']['tmp_name'];
+                if($path_testimonial_photo != '')
+                {
+                    $extension_testimonial_photo = pathinfo($path_testimonial_photo, PATHINFO_EXTENSION);
+                    $filename_testimonial_photo = "testimonial_photo.jpg";
 
-            header('location: ' . ADMIN_URL . 'setting.php');
-            exit;
+                    $finfo_testimonial_photo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_testimonial_photo = finfo_file($finfo_testimonial_photo, $path_tmp_testimonial_photo);
+                    if($mime_testimonial_photo != 'image/jpeg' && $mime_testimonial_photo != 'image/png')
+                    {
+                        throw new Exception("Please upload a valid testimonial Photo");
+                    }
 
-    } catch (Exception $e ) {
-        $error_message = $e->getMessage();
+                    $current_testimonial_photo_path = '../uploads/settings/' . $_POST['current_testimonial_photo'];
+                    unlink($current_testimonial_photo_path);
+                    move_uploaded_file($path_tmp_testimonial_photo, '../uploads/settings/'.$filename_testimonial_photo);
+                }else
+                {
+                    $filename_testimonial_photo = 'testimonial_photo.jpg';
+                }
+                
+                //  Featured Property
+                if(isset($_POST['featured_property_status']) && $_POST['featured_property_status'] == 'Show'){
+                    $featured_property_status = $_POST['featured_property_status'];
+                }else{
+                    $featured_property_status = 'Hide';
+                }
+
+                // Why Choose Status
+                if(isset($_POST['why_choose_status']) && $_POST['why_choose_status'] == 'Show'){
+                    $why_choose_status = $_POST['why_choose_status'];
+                }else{
+                    $why_choose_status = 'Hide';
+                }
+
+                // Agent Status
+                if(isset($_POST['agent_status']) && $_POST['agent_status'] == 'Show'){
+                    $agent_status = $_POST['agent_status'];
+                }else{
+                    $agent_status = 'Hide';
+                }
+
+                // Location Status
+                if(isset($_POST['location_status']) && $_POST['location_status'] == 'Show'){
+                    $location_status = $_POST['location_status'];
+                }else{
+                    $location_status = 'Hide';
+                }
+
+                // News Status
+                if(isset($_POST['news_status']) && $_POST['news_status'] == 'Show'){
+                    $news_status = $_POST['news_status'];
+                }else{
+                    $news_status = 'Hide';
+                }
+
+                // Testimonial Status
+                if(isset($_POST['testimonial_status']) && $_POST['testimonial_status'] == 'Show'){
+                    $testimonial_status = $_POST['testimonial_status'];
+                }else{
+                    $testimonial_status = 'Hide';
+                }
+
+                $statement = $conn->prepare("UPDATE settings SET 
+                    logo=?,
+                    hero_heading=?,
+                    hero_subheading=?,
+                    hero_photo=?,
+                    favicon=?,
+                    banner=?,
+                    address=?,
+                    phone=?,
+                    copyright=?,
+                    email=?,
+                    facebook=?,
+                    instagram=?,
+                    twitter=?,
+                    youtube=?,
+                    linkedln=?,
+                    map=?,
+                    featured_property_heading=?,
+                    featured_property_subheading=?,
+                    featured_property_status=?,
+                    why_choose_heading=?,
+                    why_choose_subheading=?,
+                    why_choose_photo=?,
+                    why_choose_status=?,
+                    agent_heading=?,
+                    agent_subheading=?,
+                    agent_status=?,
+                    location_heading=?,
+                    location_subheading=?,
+                    location_status=?,
+                    news_heading=?,
+                    news_subheading=?,
+                    news_status=?,
+                    testimonial_heading=?,
+                    testimonial_photo=?,
+                    testimonial_status=?
+                    WHERE id=?");
+
+
+                $statement->execute([
+                    $filename_logo,
+                    $_POST['hero_heading'],
+                    $_POST['hero_subheading'],                
+                    $filename_hero_photo,
+                    $filename_favicon,
+                    $filename_banner,
+                    $_POST['address'],
+                    $_POST['phone'],
+                    $_POST['copyright'],
+                    $_POST['email'],
+                    $_POST['facebook'],
+                    $_POST['instagram'],
+                    $_POST['twitter'],
+                    $_POST['youtube'],
+                    $_POST['linkedln'],
+                    $_POST['map'],
+                    $_POST['featured_property_heading'],
+                    $_POST['featured_property_subheading'],
+                    $featured_property_status,
+                    $_POST['why_choose_heading'],
+                    $_POST['why_choose_subheading'],
+                    $filename_why_choose,
+                    $why_choose_status,
+                    $_POST['agent_heading'],
+                    $_POST['agent_subheading'],
+                    $agent_status,
+                    $_POST['location_heading'],
+                    $_POST['location_subheading'],
+                    $location_status,
+                    $_POST['news_heading'],
+                    $_POST['news_subheading'],
+                    $news_status,
+                    $_POST['testimonial_heading'],
+                    $filename_testimonial_photo,
+                    $testimonial_status,
+                    1
+                ]);
+
+
+                $success_message = 'Data is updated successfully';
+
+                $_SESSION['success_message'] = $success_message;
+
+                header('location: ' . ADMIN_URL . 'setting.php');
+                exit;
+
+        } catch (Exception $e ) {
+            $error_message = $e->getMessage();
+        }
     }
-}
 
 
 ?>
@@ -282,6 +384,14 @@ if(isset($_POST['form_update']))
         $why_choose_heading = $result[0]['why_choose_heading'];
         $why_choose_photo = $result[0]['why_choose_photo'];
         $why_choose_subheading = $result[0]['why_choose_subheading'];
+        $agent_heading = $result[0]['agent_heading'];
+        $agent_subheading = $result[0]['agent_subheading'];
+        $location_heading = $result[0]['location_heading'];
+        $location_subheading = $result[0]['location_subheading'];
+        $news_heading = $result[0]['news_heading'];
+        $news_subheading = $result[0]['news_subheading'];
+        $testimonial_heading = $result[0]['testimonial_heading'];
+        $testimonial_photo = $result[0]['testimonial_photo'];
 
 
     ?>
@@ -301,6 +411,7 @@ if(isset($_POST['form_update']))
                                 <input type="hidden" name="current_banner" value="<?php echo $existing_banner; ?>">
                                 <input type="hidden" name="current_hero_photo" value="<?php echo $existing_hero_photo; ?>">
                                 <input type="hidden" name="current_why_choose_photo" value="<?php echo $why_choose_photo; ?>">
+                                <input type="hidden" name="current_testimonial_photo" value="<?php echo $testimonial_photo; ?>">
 
                                 <!-- Logo Section -->
                                 <div class="partial-item">
@@ -471,6 +582,103 @@ if(isset($_POST['form_update']))
                                         <label>Status</label>
                                         <div class="toggle-container">
                                             <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="why_choose_status" value="Show" <?php if($result[0]['why_choose_status'] == 'Show') {echo "checked";} ?>>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Agent Section -->
+                                <div class="partial-header">Home Page - Agent Section</div>
+                                <div class="partial-item">
+                                    <div class="form-group mb-3">
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="agent_heading" value="<?php echo $agent_heading; ?>">
+                                    </div>
+                            
+                                    <div class="form-group mb-3">
+                                        <label>Sub Heading</label>
+                                        <input type="text" class="form-control" name="agent_subheading" value="<?php echo $agent_subheading; ?>">
+                                    </div>
+                                    
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <div class="toggle-container">
+                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="agent_status" value="Show" <?php if($result[0]['agent_status'] == 'Show') {echo "checked";} ?>>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                 <!-- Location Section -->
+                                 <div class="partial-header">Home Page - Location Section</div>
+                                <div class="partial-item">
+                                    <div class="form-group mb-3">
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="location_heading" value="<?php echo $location_heading; ?>">
+                                    </div>
+                            
+                                    <div class="form-group mb-3">
+                                        <label>Sub Heading</label>
+                                        <input type="text" class="form-control" name="location_subheading" value="<?php echo $location_subheading; ?>">
+                                    </div>
+                                    
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <div class="toggle-container">
+                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="location_status" value="Show" <?php if($result[0]['location_status'] == 'Show') {echo "checked";} ?>>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                 <!-- Latest News -->
+                                 <div class="partial-header">Home Page - Latest News</div>
+                                <div class="partial-item">
+                                    <div class="form-group mb-3">
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="news_heading" value="<?php echo $news_heading; ?>">
+                                    </div>
+                            
+                                    <div class="form-group mb-3">
+                                        <label>Sub Heading</label>
+                                        <input type="text" class="form-control" name="news_subheading" value="<?php echo $news_subheading; ?>">
+                                    </div>
+                                    
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <div class="toggle-container">
+                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="news_status" value="Show" <?php if($result[0]['news_status'] == 'Show') {echo "checked";} ?>>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <!-- Testimonial Section -->
+                                <div class="partial-header">Home Page - Testimonial Sections</div>
+                                <div class="partial-item">
+                                    <div class="form-group mb-3">
+                                        <label>Heading</label>
+                                        <input type="text" class="form-control" name="testimonial_heading" value="<?php echo $testimonial_heading; ?>">
+                                    </div>
+                               
+                                
+                                    <div class="form-group mb-3">
+                                        <label>Existing Photo</label>
+                                        <div>
+                                            <img src="<?php echo BASE_URL;  ?>uploads/settings/<?php echo $testimonial_photo; ?>" alt="" class="w_300">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label>Change Photo</label>
+                                        <div>
+                                            <input type="file" name="testimonial_photo">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <div class="toggle-container">
+                                            <input type="checkbox" data-toggle="toggle" data-on="Show" data-off="Hide" data-onstyle="success" data-offstyle="danger" name="testimonial_status" value="Show" <?php if($result[0]['testimonial_status'] == 'Show') {echo "checked";} ?>>
                                         </div>
                                     </div>
                                 </div>

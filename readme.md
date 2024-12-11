@@ -13,6 +13,10 @@ Password= UchePraise9
 Agent2
 Email = emmanuel@gmail.com
 Password = emmanuelDarkweb
+
+Agent 3
+Email = ozamahfaith@gmail.com
+Password = ochuwafaith123
  Add Property
 google map = map.google.com
 Address = fake address generator

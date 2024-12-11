@@ -124,7 +124,12 @@
      }
 
 ?>
-<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/banner.jpg)">
+<?php
+$statement22 = $conn->prepare("SELECT * FROM settings WHERE id=?");
+$statement22->execute([1]);
+$result22 = $statement22->fetchAll(PDO::FETCH_ASSOC);
+?>
+<div class="page-top" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/<?php echo $result22[0]['banner']; ?>)">
         <div class="bg"></div>
         <div class="container">
             <div class="row">

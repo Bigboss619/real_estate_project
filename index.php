@@ -201,14 +201,17 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 <?php endif; ?>
-<div class="why-choose" style="background-image: url(<?php echo BASE_URL; ?>uploads/why-choose.jpg)">
+
+<!--=========== WHY CHOOSE SECTION ============-->
+<?php if($result[0]['why_choose_status'] == 'Show'): ?>
+<div class="why-choose" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/<?php echo $result[0]['why_choose_photo']; ?>)">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="heading">
-                    <h2>Why Choose Us</h2>
+                    <h2><?php echo $result[0]['why_choose_heading']; ?></h2>
                     <p>
-                        Describing why we are best in the property business
+                        <?php echo $result[0]['why_choose_subheading']; ?>
                     </p>
                 </div>
             </div>
@@ -242,16 +245,18 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-
+<!--============ AGENT SECTION ================-->
+<?php if($result[0]['agent_status'] == 'Show'): ?>
 <div class="agent">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="heading">
-                    <h2>Agents</h2>
+                    <h2><?php echo $result[0]['agent_heading']; ?></h2>
                     <p>
-                        Meet our expert property agents from the following list
+                    <?php echo $result[0]['agent_subheading']; ?>
                     </p>
                 </div>
             </div>
@@ -283,17 +288,18 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-
-
+<!--============ LOCATION SECTION ==============-->
+<?php if($result[0]['location_status'] == 'Show'): ?>
 <div class="location pb_40">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="heading">
-                    <h2>Locations</h2>
+                    <h2><?php echo $result[0]['location_heading']; ?></h2>
                     <p>
-                        Check out all the properties of important locations
+                    <?php echo $result[0]['location_subheading']; ?>
                     </p>
                 </div>
             </div>
@@ -329,15 +335,16 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+<?php endif; ?>
 
-
-
-<div class="testimonial" style="background-image: url(<?php echo BASE_URL; ?>uploads/testimonial-bg.jpg)">
+<!--================ TESTIMONIAL SECTION =====================-->
+<?php if($result[0]['testimonial_status'] == 'Show'): ?>
+<div class="testimonial" style="background-image: url(<?php echo BASE_URL; ?>uploads/settings/<?php echo $result[0]['testimonial_photo']; ?>)">
     <div class="bg"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="main-header">Our Happy Clients</h2>
+                <h2 class="main-header"><?php echo $result[0]['testimonial_heading']; ?></h2>
             </div>
         </div>
         <div class="row">
@@ -374,15 +381,17 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
-
+<?php endif; ?>
+<!--============= NEWS SECTION =================-->
+<?php if($result[0]['news_status'] == 'Show'): ?>
 <div class="blog">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="heading">
-                    <h2>Latest News</h2>
+                    <h2><?php echo $result[0]['news_heading']; ?></h2>
                     <p>
-                        Check our latest news from the following section
+                    <?php echo $result[0]['news_subheading']; ?>
                     </p>
                 </div>
             </div>
@@ -423,5 +432,5 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
-
+<?php endif; ?>
 <?php require_once('footer.php'); ?>
