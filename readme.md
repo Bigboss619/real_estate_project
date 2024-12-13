@@ -21,10 +21,7 @@ Password = ochuwafaith123
 Agent 4
 Email = bensonvictor@gmail.com
 Password = bensonvic123
- Add Property
-google map = map.google.com
-Address = fake address generator
-name = fake name generator
+ 
 
 location 
 lagos= <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253682.46310642836!2d3.1191414046784316!3d6.548369373436928!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng!4v1724726977388!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
@@ -42,9 +39,4 @@ Spain = <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13330
 Algeria = <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14469029.813646808!2d-8.988671417315121!3d27.702524706648372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7e8a6a28037bd1%3A0x7140bee3abd7f8a2!2sAlgeria!5e0!3m2!1sen!2sng!4v1724727427614!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
 
-
-N/B
-While using the palpay
-Use the Business account details (Client ID & Secret Key) in your config.php
-Then you use personal account details to log in to your accoint (Email and password)
 

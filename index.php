@@ -311,11 +311,11 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="col-lg-3 col-md-3">
                                 <div class="item">
                                     <div class="photo">
-                                        <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['id']; ?>"><img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row10['photo']; ?>" alt=""></a>
+                                        <a href="<?php echo BASE_URL; ?>agent/<?php echo $row10['id']; ?>"><img src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row10['photo']; ?>" alt=""></a>
                                     </div>
                                     <div class="text">
                                         <h2>
-                                            <a href="<?php echo BASE_URL; ?>agent/<?php echo $row['id']; ?>"><?php echo $row10['fullname']; ?></a>
+                                            <a href="<?php echo BASE_URL; ?>agent/<?php echo $row10['id']; ?>"><?php echo $row10['fullname']; ?></a>
                                         </h2>
                                     </div>
                                 </div>
