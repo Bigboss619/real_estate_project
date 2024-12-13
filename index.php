@@ -95,7 +95,8 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<?php if($result[0]['featured_property_status'] == 'Show'): ?>
+<!--=============== FEATURE PROPERTY SECTION ==================-->
+<?php if ($result[0]['featured_property_status'] == 'Show'): ?>
     <div class="property">
         <div class="container">
             <div class="row">
@@ -108,53 +109,67 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="row">
                 <?php
-                $statement = $conn->prepare("SELECT p.*,
-                    l.name as location_name,
-                    t.name as type_name,
+                // Pagination settings
+                $per_page = 6; // Properties per page
+                $statement = $conn->prepare("SELECT COUNT(*) 
+                            FROM property p
+                            JOIN locations l ON p.location_id = l.id
+                            JOIN types t ON p.type_id = t.id
+                            JOIN agents a ON p.agent_id = a.id
+                            WHERE p.is_featured=? 
+                            AND p.agent_id NOT IN(
+                                SELECT a.id 
+                                FROM agents a
+                                JOIN orders o ON a.id = o.agent_id
+                                WHERE o.expire_date < ? 
+                                AND o.currently_active = ?
+                            )
+                            ORDER BY p.id DESC"); 
+                $statement->execute(['Yes', date('Y-m-d'), '1']);
+                $total_properties = $statement->fetchColumn();
+                $total_pages = ceil($total_properties / $per_page);
+                $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
+                $start = ($page - 1) * $per_page;
+
+                // Fetch paginated results
+                $statement = $conn->prepare("SELECT p.*, 
+                    l.name as location_name, 
+                    t.name as type_name, 
                     a.fullname, a.company, a.photo
                     FROM property p
-                    JOIN locations l 
-                    ON p.location_id = l.id 
-                    JOIN types t 
-                    ON p.type_id = t.id
-                    JOIN agents a
-                    ON p.agent_id = a.id
+                    JOIN locations l ON p.location_id = l.id
+                    JOIN types t ON p.type_id = t.id
+                    JOIN agents a ON p.agent_id = a.id
                     WHERE p.is_featured=? AND p.agent_id NOT IN(
-                    -- Removes agent post when there packages expires
                         SELECT a.id FROM agents a
-                        JOIN orders o
-                        ON a.id = o.agent_id
+                        JOIN orders o ON a.id = o.agent_id
                         WHERE o.expire_date < ? AND o.currently_active = ?
-                    ) LIMIT 6");
+                    )
+                    ORDER BY p.id DESC
+                    LIMIT $start, $per_page");
                 $statement->execute(['Yes', date('Y-m-d'), '1']);
                 $result1 = $statement->fetchAll(PDO::FETCH_ASSOC);
-                $total = $statement->rowCount();
-                if (!$total) {
+
+                if (empty($result1)) {
                 ?>
                     <div class="col-md-12">
                         No Property Found
                     </div>
-                    <?php
+                <?php
                 } else {
                     foreach ($result1 as $row) {
-                    ?>
+                ?>
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="item">
                                 <div class="photo">
                                     <img class="main" src="<?php echo BASE_URL; ?>uploads/property/<?php echo $row['feature_photo']; ?>" alt="">
                                     <div class="top">
-                                        <div class="status-<?php if ($row['purpose'] == 'Rent') {
-                                                                echo 'rent';
-                                                            } else {
-                                                                echo 'sale';
-                                                            } ?> ">
+                                        <div class="status-<?php echo $row['purpose'] == 'Rent' ? 'rent' : 'sale'; ?>">
                                             For <?php echo $row['purpose']; ?>
                                         </div>
-                                        <?php if($row['is_featured'] == 'Yes'): ?>
-                                        <div class="featured">
-                                            Featured
-                                        </div>
-                                <?php endif; ?>
+                                        <?php if ($row['is_featured'] == 'Yes'): ?>
+                                            <div class="featured">Featured</div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="price">$<?php echo $row['price']; ?></div>
                                     <div class="wishlist"><a href="<?php echo BASE_URL; ?>customer-wishlist-add.php?id=<?php echo $row['id']; ?>"><i class="far fa-heart"></i></a></div>
@@ -184,8 +199,7 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             <?php else: ?>
                                                 <img class="agent-photo" src="<?php echo BASE_URL; ?>uploads/agent-dp/<?php echo $row['photo']; ?>" alt="">
                                             <?php endif; ?>
-
-                                            <a href=""><?php echo $row['fullname']; ?>(<?php echo $row['company']; ?>)</a>
+                                            <a href=""><?php echo $row['fullname']; ?> (<?php echo $row['company']; ?>)</a>
                                         </div>
                                     </div>
                                 </div>
@@ -195,12 +209,37 @@ $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                     }
                 }
                 ?>
+            </div>
 
+            <!-- Pagination Section -->
+            <div class="pagination">
+                <?php
+                $common_url = BASE_URL . 'index.php?';
+                if ($total_properties > $per_page): ?>
+                    <!-- Previous Button -->
+                    <?php if ($page > 1): ?>
+                        <a class="links-pagina" href="<?php echo $common_url . 'p=' . ($page - 1); ?>"> << </a>
+                    <?php else: ?>
+                        <a class="links-pagina disabled" href="javascript:void(0);" style="background:#ddd;"> << </a>
+                    <?php endif; ?>
 
+                    <!-- Page Numbers -->
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <a class="links-pagina <?php echo ($page == $i) ? 'active' : ''; ?>" href="<?php echo $common_url . 'p=' . $i; ?>"><?php echo $i; ?></a>
+                    <?php endfor; ?>
+
+                    <!-- Next Button -->
+                    <?php if ($page < $total_pages): ?>
+                        <a class="links-pagina" href="<?php echo $common_url . 'p=' . ($page + 1); ?>"> >> </a>
+                    <?php else: ?>
+                        <a class="links-pagina disabled" href="javascript:void(0);" style="background:#ddd;"> >> </a>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 <?php endif; ?>
+
 
 <!--=========== WHY CHOOSE SECTION ============-->
 <?php if($result[0]['why_choose_status'] == 'Show'): ?>
