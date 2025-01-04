@@ -1,7 +1,8 @@
 # Use an official PHP runtime as the base image
-FROM php:8.1-apache
+FROM php:8.2-apache
 
 # Copy application files to the container
+RUN docker-php-ext-install pdo_mysql
 COPY . /var/www/html
 
 # Set permissions for the web server

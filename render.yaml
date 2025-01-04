@@ -3,3 +3,5 @@ services:
     name: RealEstateApp
     env: docker
     plan: free
+    key: PHP_VERSION
+    value: 8.2
