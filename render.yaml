@@ -1,11 +1,5 @@
 services:
   - type: web
     name: RealEstateApp
-    env: php
-    buildCommand: ""
-    startCommand: ""
+    env: docker
     plan: free
-    region: oregon  # Adjust this based on your location preference
-    envVars:
-      - key: PHP_VERSION
-        value: 8.1  # Use the PHP version your app requires
